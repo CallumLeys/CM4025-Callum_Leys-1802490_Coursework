@@ -23,12 +23,12 @@ export const fetchQuotes = (email) => dispatch => {
   axios
     .get(`/api/quotes/all?email=${email}`) // Include email as query parameter
     .then(res => {
+      console.log(res)
       dispatch({
         type: GET_QUOTES,
-        payload: res.data
+        payload: res
       });
       console.log("Successfully fetched quotes!");
-      console.log(res.data)
     })
     .catch(err => {
       console.error("Failed to fetch quotes:", err);
