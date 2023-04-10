@@ -59,5 +59,26 @@ router.get("/all", (req, res) => {
     });
 });
 
+// @route DELETE api/quotes/delete/:id
+// @desc Delete a quote by ID
+// @access Private
+router.delete("/delete/:id", (req, res) => {
+  const quoteId = req.params.id; // Get the quote ID from the URL parameter
+
+  // Find the quote by ID and remove it from the database
+  Quote.findByIdAndRemove(quoteId)
+    .then(quote => {
+      if (!quote) {
+        // If quote is not found, return an error
+        return res.status(404).json({ error: "Quote not found" });
+      }
+      console.log(`Quote with ID ${quoteId} deleted successfully`);
+      res.json({ success: true });
+    })
+    .catch(err => {
+      console.error(`Failed to delete quote with ID ${quoteId}:`, err);
+      res.status(500).json({ error: "Failed to delete quote" });
+    });
+});
 
   module.exports = router;
