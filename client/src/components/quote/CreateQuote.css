@@ -1,0 +1,37 @@
+.select-wrapper {
+    position: relative;
+  }
+  
+  select {
+    display: block;
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #333;
+    background-color: transparent !important; /* Updated */
+    background-image: none;
+    border: 0px solid #ccc;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  }
+  
+  select:focus {
+    outline: 0;
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+  
+  .select-wrapper::after {
+    content: '\f107';
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+    font-family: 'FontAwesome';
+    font-size: 1rem;
+    color: #999;
+    pointer-events: none;
+  }
+  
