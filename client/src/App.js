@@ -21,7 +21,6 @@ import "./App.css";
 
 const history = createBrowserHistory();
 
-/*
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
   // Set auth token header auth
@@ -41,7 +40,6 @@ if (localStorage.jwtToken) {
     window.location.href = "./login";
   }
 }
-*/
 
 class App extends Component {
   render() {

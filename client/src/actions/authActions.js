@@ -12,17 +12,25 @@ import {
 
 // Register User
 export const registerUser = (userData, history) => dispatch => {
-  axios
-    .post("/api/users/register", userData)
-    //.then(() => console.log(history))
-    .then(res => history.push("/login"))
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
+  return new Promise((resolve, reject) => {
+    axios
+      .post("/api/users/register", userData)
+      .then(res => {
+        // Successful registration
+        history.push("/login");
+        resolve(res.data); // resolve with the response data
       })
-    );
+      .catch(err => {
+        // Failed registration
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        });
+        reject(err.response.data); // reject with the error response data
+      });
+  });
 };
+
 
 // Login - get user token
 export const loginUser = (userData) => dispatch => {
