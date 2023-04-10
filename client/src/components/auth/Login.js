@@ -18,6 +18,7 @@ const Login = ({history}) => {
   useEffect(() => {
     if (auth.isAuthenticated) {
       history.push("/dashboard");
+      navigate("/dashboard");
     }
   }, [auth.isAuthenticated, history]);
   

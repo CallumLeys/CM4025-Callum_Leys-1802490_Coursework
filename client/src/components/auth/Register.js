@@ -20,6 +20,13 @@ const Register = ({history}) => {
   const navigate = useNavigate();
   const auth = useSelector(state => state.auth);
 
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      history.push("/dashboard");
+      navigate("/dashboard");
+    }
+  }, [auth.isAuthenticated, history]);
+
   const onChange = (e) => {
     setState({ ...state, [e.target.id]: e.target.value });
   };

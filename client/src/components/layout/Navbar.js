@@ -15,7 +15,7 @@ const Navbar = ({ auth, logoutUser }) => {
       return (
         <ul className="right">
           <li>
-            <span className="black-text">{`Welcome, ${auth.user.name}`}</span>
+          <span className="black-text" style={{ marginRight: "16px" }}>{`Welcome, ${auth.user.name}`}</span>
           </li>
           <li>
             <button
