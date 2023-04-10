@@ -153,7 +153,17 @@ const handleAddPhysicalResource = (subtaskIndex) => {
           subtasks: subtasks
         };
         console.log("Quote Data", quoteData)
-        dispatch(createQuote(quoteData));
+        dispatch(createQuote(quoteData)).then(() => {
+          // Clear all inputs
+          console.log("Quote Created CLEAR TEST-----")
+          setQuoteName("");
+          setSubtasks([{ subtaskName: "", humanResources: [], physicalResources: [] }]);
+          setShowSuccess(true); // Show success message
+        })
+        .catch((err) => {
+          // Handle error, e.g. show error message
+          console.log(err);
+        });;
   };
 
   const handleCloseSuccess = () => {

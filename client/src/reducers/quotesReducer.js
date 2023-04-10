@@ -1,7 +1,7 @@
 import { GET_QUOTES } from "../actions/types";
 
 const initialState = {
-  quotes: []
+  quotes: [],
 };
 
 const quotesReducer = (state = initialState, action) => {
