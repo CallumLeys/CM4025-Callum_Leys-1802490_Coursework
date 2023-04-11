@@ -14,6 +14,9 @@ const UserSchema = new Schema({
   quoteCost:{
     type: Number
   },
+  fudgeFactor:{
+    type: Number
+  },
   subtasks: [
     {
       subtaskName: {
@@ -21,6 +24,12 @@ const UserSchema = new Schema({
         required: true
       },
       subtaskTotal: {
+        type: Number
+      },
+      hrTotalCost: {
+        type: Number
+      },
+      prTotalCost: {
         type: Number
       },
       humanResources: [
@@ -43,7 +52,7 @@ const UserSchema = new Schema({
               return this.humanResources && this.humanResources.length > 0;
             }
           },
-          htTotal: {
+          hrTotal: {
             type: Number
           }
         }
@@ -83,11 +92,10 @@ const UserSchema = new Schema({
   ]
 });
 
-// Custom validation to ensure at least one of humanResources or physicalResources is present
+// Custom validation to ensure at least one of humanResources is present
 UserSchema.path("subtasks").validate(function(value) {
   for (let i = 0; i < value.length; i++) {
-    if ((value[i].humanResources && value[i].humanResources.length > 0) ||
-        (value[i].physicalResources && value[i].physicalResources.length > 0)) {
+    if ((value[i].humanResources && value[i].humanResources.length > 0)) {
       return true;
     }
   }

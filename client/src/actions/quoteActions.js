@@ -22,7 +22,7 @@ export const createQuote = (quoteData) => (dispatch) => {
   });
 };
 
-// View Quote
+// View Quotes
 export const fetchQuotes = (email) => dispatch => {
   return new Promise((resolve, reject) => {
   axios
@@ -55,7 +55,7 @@ export const deleteQuote = (quoteId, email) => (dispatch) => {
           // If the quote is successfully deleted, you can dispatch an action to handle the success case, e.g. showing a success message
           console.log(`Quote with ID: ${quoteId} deleted successfully`);
           // show a success message
-          dispatch({ type: SHOW_SUCCESS_MESSAGE, payload: "Quote deleted successfully" });
+          dispatch({ type: SHOW_SUCCESS_MESSAGE, payload: "Quote created successfully" });
           // Fetch updated quotes after successful deletion
           dispatch(fetchQuotes(email));
           resolve(res.data); // Resolve with response data

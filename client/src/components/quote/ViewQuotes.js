@@ -4,12 +4,13 @@ import { deleteQuote, fetchQuotes } from "../../actions/quoteActions";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import "./CreateQuote.css"
 
 const ViewQuotes = ({}) => {
     const dispatch = useDispatch();
     const [quotes, setQuotes] = useState([]); // State to store quotes
-    const [successMessage, setSuccessMessage] = useState(null); // State to store success message
     const email = useSelector(state => state.auth.user.email);
+    const [showSuccess, setShowSuccess] = useState(false);
   
     useEffect(() => {
       // Fetch quotes from backend with email
@@ -23,11 +24,10 @@ const ViewQuotes = ({}) => {
 
     const handleDelete = quoteId => {
       dispatch(deleteQuote(quoteId, email)).then(() => {
-        // Update success message
-        setSuccessMessage("Quote deleted successfully!");
         // Fetch updated quotes from backend
         dispatch(fetchQuotes(email)).then(response => {
           setQuotes(response); // Update the quotes state with the updated response
+          setShowSuccess(true);
         }).catch(error => {
           console.log("Error:", error); // Log any error that occurred during dispatch
         });
@@ -36,10 +36,32 @@ const ViewQuotes = ({}) => {
       });
     };
 
+    const handleView = (quoteId) => {
+      console.log(`Viewing quote with ID: ${quoteId}`);
+      // Navigate to edit quote screen and pass the selected quote as state
+      
+    };
+
+    const handleCloseSuccess = () => {
+      // Hide success message
+      setShowSuccess(false);
+    };
+
     return (
       <div>
         <h1>Your Quotes</h1>
-        {successMessage && <p style={{ color: "green", textAlign: "center" }}>{successMessage}</p>}
+        <div>
+          {showSuccess && (
+              <div className="success-message">
+                <div className="success-message-content">
+                  <p>Quote Deleted Successfully!</p>
+                  <button onClick={handleCloseSuccess} className="btn btn-small">
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         {quotes && quotes.length === 0 && (
           <p style={{ color: "red", textAlign: "center" }}>No quotes found</p>
         )}
@@ -67,15 +89,15 @@ const ViewQuotes = ({}) => {
                   justifyContent: "space-between",
                 }}
               >
-                <div style={{ flex: "1" }}>{quote.quoteName}</div>
+                <div style={{ flex: "1" }}>
+                  <div>Quote: {quote.quoteName}</div>
+                  <div>Total: £{quote.quoteCost}</div>
+                </div>
                 <div>
                   <FontAwesomeIcon
                     icon={faEye}
                     style={{ marginRight: "10px", cursor: "pointer" }}
-                    onClick={() => {
-                      // Handle view functionality
-                      console.log(`Viewing quote with ID: ${quote._id}`);
-                    }}
+                    onClick={() => handleView(quote._id)}
                   />
                   <FontAwesomeIcon
                     icon={faTrashAlt}

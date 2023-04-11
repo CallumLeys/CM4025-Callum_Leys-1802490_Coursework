@@ -172,9 +172,7 @@ const handleAddPhysicalResource = (subtaskIndex) => {
   // ------------------------------------------------------ RENDER ------------------------------------------------------
   return (
 <div>
-  <h1 style={{ fontSize: '24px', textAlign: 'center', background: '#e0e0e0', padding: '10px' }}>
-     Create Quote
-  </h1>
+  <h1>Create Quote</h1>
   <div className="quote-name" style={{marginRight: '20%', marginLeft: '20%'}}>
     <label htmlFor="quoteName" style={{color: 'black'}}>Quote Name:</label>
     <input
@@ -375,14 +373,24 @@ const handleAddPhysicalResource = (subtaskIndex) => {
     
   </div>
   {showSuccess && (
-    <div className="success-msg">
-      <p style={{textAlign: 'center'}}>Quote created successfully!</p>
-      <button onClick={handleCloseSuccess} className="btn btn-small">
-        Close
-      </button>
-    </div>
-  )}
-</div>
+      <div className="success-message">
+        <div className="success-message-content">
+          <p>Quote Created Successfully!</p>
+          <button onClick={handleCloseSuccess} className="btn btn-small">
+            Close
+          </button>
+        </div>
+      </div>
+    )
+  };
+  <div style={{backgroundColor: "rgba(128, 128, 128, 0.3)", marginRight: '20%', marginLeft: '20%', textAlign: "center"}}>
+    <p><b>Prices calculated as:</b></p>
+    <p><b>Total Cost = </b>sum of all subtasks (subtask1 + subtask2 + ... + subtaskN)</p>
+    <p><b>Single Subtask Cost = </b>all human resources + all physical resources</p>
+    <p><b>Human Resources Cost = </b>sum of all human resource costs (hours * rate)</p>
+    <p><b>Physical Resources Cost = </b>sum of all physical resource costs (EITHER <u>cost</u> if <b>Once-off</b> OR <u>cost * hours</u> if <b>Hourly</b>)</p>
+  </div>
+  </div>
 );};
 
 export default CreateQuote;

@@ -35,3 +35,26 @@
     pointer-events: none;
   }
   
+  .success-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(191, 196, 191, 0.428);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  
+  .success-message-content {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  .btn {
+    margin-top: 10px;
+  }
