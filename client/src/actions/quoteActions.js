@@ -1,5 +1,5 @@
 import axios from "axios";
-import { SHOW_SUCCESS_MESSAGE, CLEAR_SUCCESS_MESSAGE, GET_ERRORS, GET_QUOTES } from "./types";
+import { SHOW_SUCCESS_MESSAGE, GET_ERRORS, GET_QUOTES, GET_QUOTE } from "./types";
 
 // Create Quote
 export const createQuote = (quoteData) => (dispatch) => {
@@ -26,7 +26,7 @@ export const createQuote = (quoteData) => (dispatch) => {
 export const fetchQuotes = (email) => dispatch => {
   return new Promise((resolve, reject) => {
   axios
-    .get(`/api/quotes/all?email=${email}`) // Include email as query parameter
+    .get(`/api/quotes/all?email=${email}`)
     .then(res => {
       dispatch({
         type: GET_QUOTES,
@@ -72,3 +72,25 @@ export const deleteQuote = (quoteId, email) => (dispatch) => {
     }
   });
 };
+
+// View Quote
+export const viewQuote = (quoteId) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(`/api/quotes/view?quoteId=${quoteId}`)
+      .then(res => {
+        dispatch({
+          type: GET_QUOTE,
+          payload: res.data
+        });
+        resolve(res.data);
+        console.log("Successfully found quote!");
+        console.log(res)
+      })
+      .catch(err => {
+        console.error("Failed to view quote:", err);
+        dispatch({ type: GET_ERRORS, payload: err.response.data });
+        reject(err.response.data);
+      });
+  });
+}

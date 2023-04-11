@@ -157,4 +157,23 @@ router.delete("/delete/:id", (req, res) => {
     });
 });
 
+// @route GET api/quotes/all
+// @desc Fetch all quotes based on user email
+// @access Private
+router.get("/view", (req, res) => {
+  console.log("TESTING VIEW QUOTE");
+  const quoteId = req.query.quoteId; // Get the email from the query parameter
+
+  // Find all quotes with the provided email
+  Quote.find({ _id: quoteId })
+    .then(quote => {
+      console.log("Quote found successfully:", quote);
+      console.log(quoteId);
+      res.json(quote);
+    })
+    .catch(err => {
+      res.status(500).json({ error: "Failed to find quote" });
+    });
+});
+
   module.exports = router;

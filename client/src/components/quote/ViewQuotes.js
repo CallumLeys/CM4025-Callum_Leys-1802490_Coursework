@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteQuote, fetchQuotes } from "../../actions/quoteActions";
-import { Link } from "react-router-dom";
+import { deleteQuote, fetchQuotes, viewQuote } from "../../actions/quoteActions";
+import { Link, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import "./CreateQuote.css"
@@ -9,8 +9,10 @@ import "./CreateQuote.css"
 const ViewQuotes = ({}) => {
     const dispatch = useDispatch();
     const [quotes, setQuotes] = useState([]); // State to store quotes
+    const [quote, setQuote] = useState([]); // State to store quotes
     const email = useSelector(state => state.auth.user.email);
     const [showSuccess, setShowSuccess] = useState(false);
+    const navigate = useNavigate();
   
     useEffect(() => {
       // Fetch quotes from backend with email
@@ -38,8 +40,15 @@ const ViewQuotes = ({}) => {
 
     const handleView = (quoteId) => {
       console.log(`Viewing quote with ID: ${quoteId}`);
-      // Navigate to edit quote screen and pass the selected quote as state
-      
+      // Dispatch the loginUser action
+      dispatch(viewQuote(quoteId)).then(() => {
+        // navigate to view-quote page
+        navigate("/view-quote");
+      })
+      .catch(err => {
+        // Handle any errors that occurred during the loginUser action dispatch
+        console.error(err);
+      });
     };
 
     const handleCloseSuccess = () => {

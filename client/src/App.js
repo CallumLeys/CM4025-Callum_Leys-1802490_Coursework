@@ -16,6 +16,7 @@ import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 import CreateQuote from "./components/quote/CreateQuote";
 import ViewQuotes from "./components/quote/ViewQuotes";
+import ViewQuote from "./components/quote/ViewQuote";
 
 import "./App.css";
 
@@ -67,6 +68,12 @@ class App extends Component {
                 path="/view-quotes"
                 element={
                   <PrivateRoute component={<ViewQuotes />}/>
+                }
+              />
+              <Route 
+                path="/view-quote"
+                element={
+                  <PrivateRoute component={<ViewQuote />}/>
                 }
               />
             </Routes>
