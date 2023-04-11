@@ -3,19 +3,23 @@ import { SHOW_SUCCESS_MESSAGE, CLEAR_SUCCESS_MESSAGE, GET_ERRORS, GET_QUOTES } f
 
 // Create Quote
 export const createQuote = (quoteData) => (dispatch) => {
-  axios
-    .post("/api/quotes/create", quoteData)
-    .then((res) => {
-      // If the quote is successfully created, you can dispatch an action to handle the success case, e.g. showing a success message
-      console.log("Quote created successfully:", res.data);
-      // show a success message
-      dispatch({ type: SHOW_SUCCESS_MESSAGE, payload: "Quote created successfully" });
-    })
-    .catch((err) => {
-      // If there is an error while creating the quote, you can dispatch an action to handle the error case, e.g. showing an error message
-      console.error("Failed to create quote:", err.response.data);
-      dispatch({ type: GET_ERRORS, payload: err.response.data });
-    });
+  return new Promise((resolve, reject) => {
+    axios
+      .post("/api/quotes/create", quoteData)
+      .then((res) => {
+        // If the quote is successfully created, you can dispatch an action to handle the success case, e.g. showing a success message
+        console.log("Quote created successfully:", res.data);
+        // show a success message
+        dispatch({ type: SHOW_SUCCESS_MESSAGE, payload: "Quote created successfully" });
+        resolve(res.data);
+      })
+      .catch((err) => {
+        // If there is an error while creating the quote, you can dispatch an action to handle the error case, e.g. showing an error message
+        console.error("Failed to create quote:", err.response.data);
+        dispatch({ type: GET_ERRORS, payload: err.response.data });
+        reject(err.response.data);
+      });
+  });
 };
 
 // View Quote

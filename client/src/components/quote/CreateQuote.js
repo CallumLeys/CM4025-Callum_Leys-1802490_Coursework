@@ -155,7 +155,6 @@ const handleAddPhysicalResource = (subtaskIndex) => {
         console.log("Quote Data", quoteData)
         dispatch(createQuote(quoteData)).then(() => {
           // Clear all inputs
-          console.log("Quote Created CLEAR TEST-----")
           setQuoteName("");
           setSubtasks([{ subtaskName: "", humanResources: [], physicalResources: [] }]);
           setShowSuccess(true); // Show success message
@@ -377,7 +376,7 @@ const handleAddPhysicalResource = (subtaskIndex) => {
   </div>
   {showSuccess && (
     <div className="success-msg">
-      <p>Quote created successfully!</p>
+      <p style={{textAlign: 'center'}}>Quote created successfully!</p>
       <button onClick={handleCloseSuccess} className="btn btn-small">
         Close
       </button>

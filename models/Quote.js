@@ -11,11 +11,17 @@ const UserSchema = new Schema({
     type: String,
     required: true
   },
+  quoteCost:{
+    type: Number
+  },
   subtasks: [
     {
       subtaskName: {
         type: String,
         required: true
+      },
+      subtaskTotal: {
+        type: Number
       },
       humanResources: [
         {
@@ -36,6 +42,9 @@ const UserSchema = new Schema({
             required: function() {
               return this.humanResources && this.humanResources.length > 0;
             }
+          },
+          htTotal: {
+            type: Number
           }
         }
       ],
@@ -64,6 +73,9 @@ const UserSchema = new Schema({
             required: function() {
               return this.physicalResources && this.physicalResources.length > 0 && this.prResourceType != 'One-off';
             }
+          },
+          prTotal: {
+            type: Number
           }
         }
       ]

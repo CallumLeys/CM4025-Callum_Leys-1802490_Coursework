@@ -16,6 +16,12 @@ router.post("/create", (req, res) => {
     // Form validation
     const { errors, isValid } = validateQuoteInput(req.body);
     const { quoteName, email, subtasks } = req.body; // Get the quote data from the request body
+    const fs = require('fs'); // Import the fs module to read the JSON file
+
+    // Load the rateMap from the JSON file
+    const rateMapPath = 'client/src/utils/rateMap.json';
+    const rateMap = JSON.parse(fs.readFileSync(rateMapPath, 'utf-8'));
+
     // Check validation
     if (!isValid) {
       return res.status(400).json(errors);
@@ -26,7 +32,78 @@ router.post("/create", (req, res) => {
       email: email,
       subtasks: subtasks
     });
-  
+
+    // Initialize total costs
+    let totalHumanResourceCost = 0;
+    let totalPhysicalResourceCost = 0;
+    let totalSubtaskCost = 0;
+    let quoteCost = 0;
+    
+    // Iterate through each subtask object in the subtasks array
+    subtasks.forEach(subtask => {
+      const humanResources = subtask.humanResources || []; // Access human resources, default to an empty array if not available
+      const physicalResources = subtask.physicalResources || []; // Access physical resources, default to an empty array if not available
+
+      // Iterate through humanResources and retrieve descriptions
+      humanResources.forEach(humanResource => {
+        const hrHours = humanResource.hrHours; // Access the hrHours property of the human resource object
+        const hrRate = humanResource.hrRate; // Access the hrRate property of the human resource object
+        const rateValue = rateMap[hrRate] || 0; // Get the rate value from the rateMap, default to 0 if rate not found
+        // Calculate human resource cost for the subtask
+        const humanResourceCost = hrHours * rateValue;
+        //console.log("Human Resource Hours:", hrHours);
+        //console.log("Human Resource Rate:", hrRate);
+        //console.log("Human Resource Rate Value:", rateValue);
+        //console.log("Human Resource Cost for Subtask:", humanResourceCost);
+
+        // Update human resource cost in the humanResources array
+        humanResource.hrTotal = humanResourceCost;
+
+        // Add human resource cost to total human resource cost
+        totalHumanResourceCost += humanResourceCost;
+      });
+
+      // Iterate through physicalResources and retrieve descriptions
+      physicalResources.forEach(physicalResource => {
+        const prResourceType = physicalResource.prResourceType; // Access the prResourceType property of the physical resource object
+        const prCost = physicalResource.prCost; // Access the prCost property of the physical resource object
+        const prHours = physicalResource.prHours; // Access the prHours property of the physical resource object
+
+        // Use prResourceType, prCost, and prHours as needed
+        //console.log("Physical Resource Type:", prResourceType);
+
+        if (prResourceType === 'One-off') {
+          //console.log("Physical Resource Cost:", prCost);
+          // Update physical resource cost in the physicalResources array
+          physicalResource.prTotal = parseInt(prCost);
+          // Add physical resource cost to total physical resource cost
+          totalPhysicalResourceCost += parseInt(prCost);
+
+        } else if (prResourceType === 'Hourly') {
+          //console.log("Physical Resource Cost:", prCost);
+          //console.log("Physical Resource Hours:", prHours);
+          // Multiply prCost by prHours for hourly resources
+          const totalCost = parseInt(prCost) * parseInt(prHours);
+          //console.log("Total Cost:", totalCost);
+          // Update physical resource cost in the physicalResources array
+          physicalResource.prTotal = totalCost;
+          // Add physical resource cost to total physical resource cost
+          totalPhysicalResourceCost += totalCost;
+        }
+      });
+      subtask.subtaskTotalCost = totalHumanResourceCost + totalPhysicalResourceCost;
+
+      //console.log('HR total:',totalHumanResourceCost);
+      //console.log('PR total:',totalPhysicalResourceCost);
+      totalSubtaskCost = totalHumanResourceCost+totalPhysicalResourceCost;
+      //console.log('Subtask total:',totalSubtaskCost);
+      quoteCost += totalSubtaskCost;
+    });
+
+    newQuote.quoteCost = quoteCost;
+    console.log('Quote total:',quoteCost);
+    console.log('QUOTE TEST----',newQuote)
+    
     // Save the quote to the database
     newQuote
       .save()
