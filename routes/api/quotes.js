@@ -8,6 +8,7 @@ const passport = require("passport");
 const validateQuoteInput = require("../../validation/quote");
 // Load Quote model
 const Quote = require("../../models/Quote");
+const User = require("../../models/User");
 
 // @route POST api/quotes/create
 // @desc Create a new quote
@@ -120,19 +121,39 @@ router.get("/all", (req, res) => {
   console.log("TESTING GET ALL QUOTES");
   const email = req.query.email; // Get the email from the query parameter
 
-  // Find all quotes with the provided email
-  Quote.find({ email: email })
-    .then(quotes => {
-      console.log("Quotes fetched successfully:", quotes);
-      quotes.forEach(quote => {
-        console.log(quote.fudgeFactor);
+  User.findOne({ email }).then(user => {
+    // Find all quotes with the provided email
+    Quote.find({ email: email })
+      .then(quotes => {
+        let newQuotes = quotes;
+        // if user is admin, return de-fudged values
+        if(user.userRole === 'admin'){
+          console.log("Is Admin");
+          newQuotes.forEach(quote => {
+            let deFudgeQuoteCost = 0;
+            quote.subtasks.forEach(subtask =>{
+              // get the de-fudged subtask
+              const deFudgeSubtaskCost = (subtask.subtaskTotal / quote.fudgeFactor).toFixed(2);
+              // update the deFudgeQuoteCost value for the subtask
+              subtask.subtaskTotal = parseFloat(deFudgeSubtaskCost); 
+              // update the total
+              deFudgeQuoteCost = parseInt(deFudgeQuoteCost) + parseInt(deFudgeSubtaskCost);
+            })
+            // Update the quoteCost value
+            quote.quoteCost = deFudgeQuoteCost;            
+          });
+        }else{
+          console.log("Not Admin");
+        }
+        // return fudged values if non-admin
+        console.log("Quotes fetched successfully:", newQuotes);
+        res.json(newQuotes);
+      })
+      .catch(err => {
+        console.error("Failed to fetch quotes:", err);
+        res.status(500).json({ error: "Failed to fetch quotes" });
       });
-      res.json(quotes);
-    })
-    .catch(err => {
-      console.error("Failed to fetch quotes:", err);
-      res.status(500).json({ error: "Failed to fetch quotes" });
-    });
+  });
 });
 
 // @route DELETE api/quotes/delete/:id

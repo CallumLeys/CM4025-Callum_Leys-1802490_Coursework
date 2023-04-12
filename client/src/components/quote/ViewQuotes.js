@@ -10,9 +10,11 @@ const ViewQuotes = ({}) => {
     const dispatch = useDispatch();
     const [quotes, setQuotes] = useState([]); // State to store quotes
     const [quote, setQuote] = useState([]); // State to store quotes
-    const email = useSelector(state => state.auth.user.email);
     const [showSuccess, setShowSuccess] = useState(false);
+    const [selectedQuotes, setSelectedQuotes] = useState([]);
+    const email = useSelector(state => state.auth.user.email);
     const navigate = useNavigate();
+    let combinedTotal = 0;
   
     useEffect(() => {
       // Fetch quotes from backend with email
@@ -50,6 +52,20 @@ const ViewQuotes = ({}) => {
         console.error(err);
       });
     };
+
+    const handleCheckboxChange = (event, quoteId) => {
+      if (event.target.checked) {
+        // If checkbox is checked, add quoteId to selectedQuotes
+        setSelectedQuotes([...selectedQuotes, quoteId]);
+        console.log("Added ", quoteId)
+      } else {
+        // If checkbox is unchecked, remove quoteId from selectedQuotes
+        setSelectedQuotes(selectedQuotes.filter((id) => id !== quoteId));
+        console.log("Removed ", quoteId)
+      }
+      console.log(selectedQuotes)
+    };
+    
 
     const handleCloseSuccess = () => {
       // Hide success message
@@ -99,6 +115,15 @@ const ViewQuotes = ({}) => {
                 }}
               >
                 <div style={{ flex: "1" }}>
+                  <label>
+                    <input 
+                      type="checkbox"
+                      class="filled-in"
+                      checked={selectedQuotes.includes(quote._id)}
+                      onChange={(event) => handleCheckboxChange(event, quote._id)}
+                    />
+                    <span>Add to combined quotes</span>
+                  </label>
                   <div>Quote: {quote.quoteName}</div>
                   <div>Total: £{quote.quoteCost.toFixed(2)}</div>
                   <div>
@@ -124,6 +149,47 @@ const ViewQuotes = ({}) => {
               </li>
             ))}
           </ul>
+        )}
+        {selectedQuotes.length > 0 && (
+          <div
+            style={{
+              position: "fixed",
+              bottom: "20px",
+              right: "20px",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              color: "white",
+              padding: "10px",
+              borderRadius: "5px",
+            }}
+          >
+            <h4>Combined Quotes:</h4>
+            <ul style={{ padding: "0", listStyle: "none" }}>
+              {selectedQuotes.map((quoteId) => {
+                // Find the quote in the quotes array by matching quoteId with _id
+                const quote = quotes.find((quote) => quote._id === quoteId);
+                combinedTotal += quote.quoteCost;
+                // Render the relevant quote if found
+                if (quote) {
+                  return (
+                    <li key={quote._id}>
+                      <u>{quote.quoteName} - £{quote.quoteCost.toFixed(2)}</u>
+                      <br />
+                      Subtasks:
+                      <ul>
+                        {quote.subtasks.map((subtask) => (
+                          <li key={subtask.subtaskId}>
+                            {subtask.subtaskName} - £{subtask.subtaskTotal.toFixed(2)}
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
+                  );
+                }
+                return null; // Render nothing if quote not found
+              })}
+            </ul>
+            Quote Total: £{combinedTotal.toFixed(2)}
+          </div>
         )}
         <Link
           to="/dashboard"
