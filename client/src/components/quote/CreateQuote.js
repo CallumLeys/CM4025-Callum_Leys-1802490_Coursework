@@ -92,7 +92,7 @@ const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
 
 // ------------------------------------------------------ PHYSICAL RESOURCE ACTIONS ------------------------------------------------------
   // Function to handle adding a physical resource to a subtask
-const handleAddPhysicalResource = (subtaskIndex) => {
+  const handleAddPhysicalResource = (subtaskIndex) => {
     const updatedSubtasks = [...subtasks];
     updatedSubtasks[subtaskIndex].physicalResources.push({prResourceType: [], prDescription: "", prCost: "", prHours: ""});
     setSubtasks(updatedSubtasks);
@@ -107,13 +107,8 @@ const handleAddPhysicalResource = (subtaskIndex) => {
 
   // Function to handle changes in Resource Type
   const handleSubtaskResourceTypeChange = (e, index, prIndex) => {
-      const { value } = e.target;
-      const updatedSubtasks = [...subtasks];
-      if (value === 'one-off') {
-        updatedSubtasks[index].physicalResources[prIndex].prDescription = '';
-        updatedSubtasks[index].physicalResources[prIndex].prCost = 0;
-        updatedSubtasks[index].physicalResources[prIndex].prHours = 0;
-      }
+    const { value } = e.target;
+    const updatedSubtasks = [...subtasks];
     updatedSubtasks[index].physicalResources[prIndex].prResourceType = value;
     setSubtasks(updatedSubtasks);
   };

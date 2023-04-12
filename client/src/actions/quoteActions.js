@@ -7,15 +7,36 @@ export const createQuote = (quoteData) => (dispatch) => {
     axios
       .post("/api/quotes/create", quoteData)
       .then((res) => {
-        // If the quote is successfully created, you can dispatch an action to handle the success case, e.g. showing a success message
+        // quote is successfully created
         console.log("Quote created successfully:", res.data);
         // show a success message
         dispatch({ type: SHOW_SUCCESS_MESSAGE, payload: "Quote created successfully" });
         resolve(res.data);
       })
       .catch((err) => {
-        // If there is an error while creating the quote, you can dispatch an action to handle the error case, e.g. showing an error message
+        // error while creating the quote
         console.error("Failed to create quote:", err.response.data);
+        dispatch({ type: GET_ERRORS, payload: err.response.data });
+        reject(err.response.data);
+      });
+  });
+};
+
+// Edit Quote
+export const editQuote = (quoteData) => (dispatch) => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(`/api/quotes/edit`, { quote: quoteData })
+      .then((res) => {
+        // quote is successfully edited
+        console.log("Quote edited successfully:", res.data);
+        // show a success message
+        dispatch({ type: SHOW_SUCCESS_MESSAGE, payload: "Quote edited successfully" });
+        resolve(res.data);
+      })
+      .catch((err) => {
+        // error while editing the quote
+        console.error("Failed to edit quote:", err.response.data);
         dispatch({ type: GET_ERRORS, payload: err.response.data });
         reject(err.response.data);
       });

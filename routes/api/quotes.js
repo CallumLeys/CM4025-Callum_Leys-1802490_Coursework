@@ -114,87 +114,103 @@ router.post("/create", (req, res) => {
       });
   });
 
-// @route GET api/quotes/all
-// @desc Fetch all quotes based on user email
-// @access Private
-router.get("/all", (req, res) => {
-  console.log("TESTING GET ALL QUOTES");
-  const email = req.query.email; // Get the email from the query parameter
 
-  User.findOne({ email }).then(user => {
-    // Find all quotes with the provided email
-    Quote.find({ email: email })
-      .then(quotes => {
-        let newQuotes = quotes;
-        // if user is admin, return de-fudged values
-        if(user.userRole === 'admin'){
-          console.log("Is Admin");
-          newQuotes.forEach(quote => {
-            let deFudgeQuoteCost = 0;
-            quote.subtasks.forEach(subtask =>{
-              // get the de-fudged subtask
-              const deFudgeSubtaskCost = (subtask.subtaskTotal / quote.fudgeFactor).toFixed(2);
-              // update the deFudgeQuoteCost value for the subtask
-              subtask.subtaskTotal = parseFloat(deFudgeSubtaskCost); 
-              // update the total
-              deFudgeQuoteCost = parseInt(deFudgeQuoteCost) + parseInt(deFudgeSubtaskCost);
-            })
-            // Update the quoteCost value
-            quote.quoteCost = deFudgeQuoteCost;            
-          });
-        }else{
-          console.log("Not Admin");
+  // @route GET api/quotes/edit:id
+  // @desc Edit quote by id
+  // @access Private
+  router.post("/edit", (req, res) =>{
+    const newQuote = req.body.quote;
+    const _id = req.body.quote._id;
+    console.log('QUOTE BACKEND TEST--', newQuote.totalCost);
+    Quote.findByIdAndUpdate(_id, { quote: newQuote }, { new: true })
+    .then(updatedQuote => {
+      // updatedQuote contains the updated quote document
+      res.json(updatedQuote);
+    })
+    .catch(err => {
+      console.error("Failed to edit quote:", err);
+      res.status(500).json({ error: "Failed to edit quote" });
+    });
+  });
+
+  // @route GET api/quotes/all
+  // @desc Fetch all quotes based on user email
+  // @access Private
+  router.get("/all", (req, res) => {
+    const email = req.query.email; // Get the email from the query parameter
+
+    User.findOne({ email }).then(user => {
+      // Find all quotes with the provided email
+      Quote.find({ email: email })
+        .then(quotes => {
+          let newQuotes = quotes;
+          // if user is admin, return de-fudged values
+          if(user.userRole === 'admin'){
+            console.log("Is Admin");
+            newQuotes.forEach(quote => {
+              let deFudgeQuoteCost = 0;
+              quote.subtasks.forEach(subtask =>{
+                // get the de-fudged subtask
+                const deFudgeSubtaskCost = (subtask.subtaskTotal / quote.fudgeFactor).toFixed(2);
+                // update the deFudgeQuoteCost value for the subtask
+                subtask.subtaskTotal = parseFloat(deFudgeSubtaskCost); 
+                // update the total
+                deFudgeQuoteCost = parseInt(deFudgeQuoteCost) + parseInt(deFudgeSubtaskCost);
+              })
+              // Update the quoteCost value
+              quote.quoteCost = deFudgeQuoteCost;            
+            });
+          }else{
+            console.log("Not Admin");
+          }
+          // return fudged values if non-admin
+          console.log("Quotes fetched successfully:", newQuotes);
+          res.json(newQuotes);
+        })
+        .catch(err => {
+          console.error("Failed to fetch quotes:", err);
+          res.status(500).json({ error: "Failed to fetch quotes" });
+        });
+    });
+  });
+
+  // @route DELETE api/quotes/delete/:id
+  // @desc Delete a quote by ID
+  // @access Private
+  router.delete("/delete/:id", (req, res) => {
+    const quoteId = req.params.id; // Get the quote ID from the URL parameter
+
+    // Find the quote by ID and remove it from the database
+    Quote.findByIdAndRemove(quoteId)
+      .then(quote => {
+        if (!quote) {
+          // If quote is not found, return an error
+          return res.status(404).json({ error: "Quote not found" });
         }
-        // return fudged values if non-admin
-        console.log("Quotes fetched successfully:", newQuotes);
-        res.json(newQuotes);
+        console.log(`Quote with ID ${quoteId} deleted successfully`);
+        res.json({ success: true });
       })
       .catch(err => {
-        console.error("Failed to fetch quotes:", err);
-        res.status(500).json({ error: "Failed to fetch quotes" });
+        console.error(`Failed to delete quote with ID ${quoteId}:`, err);
+        res.status(500).json({ error: "Failed to delete quote" });
       });
   });
-});
 
-// @route DELETE api/quotes/delete/:id
-// @desc Delete a quote by ID
-// @access Private
-router.delete("/delete/:id", (req, res) => {
-  const quoteId = req.params.id; // Get the quote ID from the URL parameter
+  // @route GET api/quotes/all
+  // @desc Fetch all quotes based on user email
+  // @access Private
+  router.get("/view", (req, res) => {
+    const quoteId = req.query.quoteId; // Get the email from the query parameter
 
-  // Find the quote by ID and remove it from the database
-  Quote.findByIdAndRemove(quoteId)
-    .then(quote => {
-      if (!quote) {
-        // If quote is not found, return an error
-        return res.status(404).json({ error: "Quote not found" });
-      }
-      console.log(`Quote with ID ${quoteId} deleted successfully`);
-      res.json({ success: true });
-    })
-    .catch(err => {
-      console.error(`Failed to delete quote with ID ${quoteId}:`, err);
-      res.status(500).json({ error: "Failed to delete quote" });
-    });
-});
-
-// @route GET api/quotes/all
-// @desc Fetch all quotes based on user email
-// @access Private
-router.get("/view", (req, res) => {
-  console.log("TESTING VIEW QUOTE");
-  const quoteId = req.query.quoteId; // Get the email from the query parameter
-
-  // Find all quotes with the provided email
-  Quote.find({ _id: quoteId })
-    .then(quote => {
-      console.log("Quote found successfully:", quote);
-      console.log(quoteId);
-      res.json(quote);
-    })
-    .catch(err => {
-      res.status(500).json({ error: "Failed to find quote" });
-    });
-});
+    // Find all quotes with the provided email
+    Quote.find({ _id: quoteId })
+      .then(quote => {
+        console.log("Quote found successfully:", quote);
+        res.json(quote);
+      })
+      .catch(err => {
+        res.status(500).json({ error: "Failed to find quote" });
+      });
+  });
 
   module.exports = router;
