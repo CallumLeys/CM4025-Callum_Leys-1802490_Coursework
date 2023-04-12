@@ -85,7 +85,7 @@ const ViewQuotes = ({}) => {
               listStyle: "none",
             }}
           >
-            {quotes.map(quote => (
+            {quotes.map((quote) => (
               <li
                 key={quote._id}
                 style={{
@@ -100,7 +100,14 @@ const ViewQuotes = ({}) => {
               >
                 <div style={{ flex: "1" }}>
                   <div>Quote: {quote.quoteName}</div>
-                  <div>Total: £{quote.quoteCost}</div>
+                  <div>Total: £{quote.quoteCost.toFixed(2)}</div>
+                  <div>
+                    {quote.subtasks.map((subtask) => (
+                      <div key={subtask._id} style={{fontSize: '15px'}}>
+                        {subtask.subtaskName}: £{subtask.subtaskTotal.toFixed(2)}
+                      </div>
+                    ))}
+                  </div>
                 </div>
                 <div>
                   <FontAwesomeIcon
