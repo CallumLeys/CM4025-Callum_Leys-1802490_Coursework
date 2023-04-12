@@ -49,10 +49,13 @@ export const loginUser = (userData) => dispatch => {
         const payload = {
           id: decoded.id,
           name: decoded.name,
-          email: userData.email, // Add an extra email field
+          email: userData.email,
+          userRole: decoded.userRole,
           iat: decoded.iat,
           exp: decoded.exp
         };
+        console.log('payloadTest----', payload)
+        console.log('decoded', decoded)
         // Set current user
         dispatch(setCurrentUser(payload));
         resolve(); // Resolve the Promise

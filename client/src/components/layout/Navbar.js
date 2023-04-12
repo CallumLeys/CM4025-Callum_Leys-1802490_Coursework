@@ -1,10 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 
 const Navbar = ({ auth, logoutUser }) => {
+  const userRole = auth.user.userRole;
   const onLogoutClick = (e) => {
     e.preventDefault();
     logoutUser();
@@ -59,6 +60,15 @@ const Navbar = ({ auth, logoutUser }) => {
             <i className="material-icons">code</i>
             CleysQuotes
           </Link>
+          {userRole === "admin" && (
+            <ul className="left">
+              <li>
+                <Link to="/settings" className="black-text">
+                  Settings
+                </Link>
+              </li>
+            </ul>
+          )}
           {renderAuthButtons()}
         </div>
       </nav>

@@ -7,7 +7,8 @@ const Login = ({history}) => {
 
   const [state, setState] = useState({
         email: "",
-        password: ""
+        password: "",
+        userRole: ""
   });
 
   const dispatch = useDispatch();
@@ -32,7 +33,8 @@ const Login = ({history}) => {
     
     const userData = {
         email: state.email,
-        password: state.password
+        password: state.password,
+        userRole: state.userRole
     };
         
     // Dispatch the loginUser action

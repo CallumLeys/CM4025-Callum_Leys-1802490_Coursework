@@ -18,7 +18,6 @@ import CreateQuote from "./components/quote/CreateQuote";
 import ViewQuotes from "./components/quote/ViewQuotes";
 import ViewQuote from "./components/quote/ViewQuote";
 import Settings from "./components/admin/Settings";
-
 import "./App.css";
 
 const history = createBrowserHistory();
@@ -80,7 +79,7 @@ class App extends Component {
               <Route 
                 path="/settings"
                 element={
-                  <PrivateRoute component={<Settings />} isAdminRoute={true} />
+                  <PrivateRoute component={<Settings />} isAdminRoute={true}/>
                 }
               />
             </Routes>

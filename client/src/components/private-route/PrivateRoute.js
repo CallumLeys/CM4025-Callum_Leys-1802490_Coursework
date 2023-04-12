@@ -19,9 +19,9 @@ export default function PrivateRoute({ component: Component, isAdminRoute, ...re
     if (isAdminRoute && userRole !== 'admin') {
         console.log("Unauthorized!")
         // not authorized for admin route, redirect to unauthorized page
-        return <Navigate to="/unauthorized" />
+        return <Navigate to="/dashboard" />
     }
 
     // authorized so return component (dashboard)
-    return <Component {...rest} />;
+    return Component;
 }
