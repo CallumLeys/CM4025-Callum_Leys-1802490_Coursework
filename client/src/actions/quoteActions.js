@@ -8,7 +8,7 @@ export const createQuote = (quoteData) => (dispatch) => {
       .post("/api/quotes/create", quoteData)
       .then((res) => {
         // quote is successfully created
-        console.log("Quote created successfully:", res.data);
+        console.log("Quote created successfully:");
         // show a success message
         dispatch({ type: SHOW_SUCCESS_MESSAGE, payload: "Quote created successfully" });
         resolve(res.data);
@@ -26,7 +26,7 @@ export const createQuote = (quoteData) => (dispatch) => {
 export const editQuote = (quoteData) => (dispatch) => {
   return new Promise((resolve, reject) => {
     axios
-      .post(`/api/quotes/edit`, { quote: quoteData })
+      .put(`/api/quotes/edit`, { quote: quoteData })
       .then((res) => {
         // quote is successfully edited
         console.log("Quote edited successfully:", res.data);
@@ -55,7 +55,6 @@ export const fetchQuotes = (email) => dispatch => {
       });
       resolve(res.data);
       console.log("Successfully fetched quotes!");
-      console.log(res)
     })
     .catch(err => {
       console.error("Failed to fetch quotes:", err);
@@ -106,7 +105,6 @@ export const viewQuote = (quoteId) => (dispatch) => {
         });
         resolve(res.data);
         console.log("Successfully found quote!");
-        console.log(res)
       })
       .catch(err => {
         console.error("Failed to view quote:", err);

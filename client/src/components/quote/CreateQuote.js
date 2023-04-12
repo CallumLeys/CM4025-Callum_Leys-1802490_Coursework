@@ -339,7 +339,7 @@ const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
             </div>
                 <button onClick={() => handleRemoveSubtask(index)} className="btn btn-small red" style={{ marginTop: '10px' }}>
                     Remove Subtask
-                    </button>
+                </button>
             </div>
     ))}
     {/*  // ------------------------------------------------------ END OF SUBTASK ------------------------------------------------------ */}

@@ -9,6 +9,7 @@ const validateQuoteInput = require("../../validation/quote");
 // Load Quote model
 const Quote = require("../../models/Quote");
 const User = require("../../models/User");
+const mongoose = require("mongoose");
 
 // @route POST api/quotes/create
 // @desc Create a new quote
@@ -115,22 +116,27 @@ router.post("/create", (req, res) => {
   });
 
 
-  // @route GET api/quotes/edit:id
+  // @route POST api/quotes/edit
   // @desc Edit quote by id
   // @access Private
-  router.post("/edit", (req, res) =>{
+  router.put("/edit", (req, res) => {
     const newQuote = req.body.quote;
-    const _id = req.body.quote._id;
-    console.log('QUOTE BACKEND TEST--', newQuote.totalCost);
-    Quote.findByIdAndUpdate(_id, { quote: newQuote }, { new: true })
-    .then(updatedQuote => {
-      // updatedQuote contains the updated quote document
-      res.json(updatedQuote);
-    })
-    .catch(err => {
-      console.error("Failed to edit quote:", err);
-      res.status(500).json({ error: "Failed to edit quote" });
-    });
+    const quoteId = req.body._id;
+
+    Quote.findByIdAndUpdate(quoteId, { quoteName: newQuote.quoteName }, { new: true })
+      .then(updatedQuote => {
+        if (!updatedQuote) {
+          // If no quote was found with the given _id
+          return res.status(404).json({ error: "Quote not found" });
+        }
+        console.log('Found and edited quote', updatedQuote);
+        // updatedQuote contains the updated quote document
+        res.json(updatedQuote);
+      })
+      .catch(err => {
+        console.error("Failed to edit quote:", err);
+        res.status(500).json({ error: "Failed to edit quote" });
+      });
   });
 
   // @route GET api/quotes/all
@@ -164,7 +170,7 @@ router.post("/create", (req, res) => {
             console.log("Not Admin");
           }
           // return fudged values if non-admin
-          console.log("Quotes fetched successfully:", newQuotes);
+          console.log("Quotes fetched successfully:");
           res.json(newQuotes);
         })
         .catch(err => {
@@ -205,7 +211,7 @@ router.post("/create", (req, res) => {
     // Find all quotes with the provided email
     Quote.find({ _id: quoteId })
       .then(quote => {
-        console.log("Quote found successfully:", quote);
+        console.log("Quote found successfully:");
         res.json(quote);
       })
       .catch(err => {
