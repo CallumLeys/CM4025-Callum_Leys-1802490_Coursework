@@ -94,3 +94,19 @@ export const logoutUser = () => dispatch => {
   // Set current user to empty object {} which will set isAuthenticated to false
   dispatch(setCurrentUser({}));
 };
+
+// Update rateMap
+export const updateRateMap = (editedRateMap) => async (dispatch) => {
+  try {
+    // Make a HTTP request to backend API to update rateMap
+    const response = await axios.post("/api/users/updateRateMap", editedRateMap);
+
+    if (response.data.success) {
+      console.log("RateMap updated successfully");
+    } else {
+      console.error("Failed to update RateMap");
+    }
+  } catch (error) {
+    console.error("Failed to update RateMap", error);
+  }
+};

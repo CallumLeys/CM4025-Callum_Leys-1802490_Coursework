@@ -3,11 +3,13 @@ const router = express.Router();
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
+const path = require('path');
 // Load input validation
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 // Load User model
 const User = require("../../models/User");
+const fs = require("fs");
 
 // @route POST api/users/register
 // @desc Register user
@@ -44,54 +46,79 @@ router.post("/register", (req, res) => {
   });
 
   // @route POST api/users/login
-// @desc Login user and return JWT token
-// @access Public
-router.post("/login", (req, res) => {
-  // Form validation
-const { errors, isValid } = validateLoginInput(req.body);
-// Check validation
-  if (!isValid) {
-    return res.status(400).json(errors);
-  }
-const email = req.body.email;
-  const password = req.body.password;
-// Find user by email
-  User.findOne({ email }).then(user => {
-    // Check if user exists
-    if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
+  // @desc Login user and return JWT token
+  // @access Public
+  router.post("/login", (req, res) => {
+    // Form validation
+  const { errors, isValid } = validateLoginInput(req.body);
+  // Check validation
+    if (!isValid) {
+      return res.status(400).json(errors);
     }
-// Check password
-    bcrypt.compare(password, user.password).then(isMatch => {
-      if (isMatch) {
-        // User matched
-        // Create JWT Payload
-        const payload = {
-          id: user.id,
-          name: user.name,
-          userRole: user.userRole
-        };
-// Sign token
-        jwt.sign(
-          payload,
-          keys.secretOrKey,
-          {
-            expiresIn: 31556926 // 1 year in seconds
-          },
-          (err, token) => {
-            res.json({
-              success: true,
-              token: "Bearer " + token
-            });
-          }
-        );
+  const email = req.body.email;
+    const password = req.body.password;
+  // Find user by email
+    User.findOne({ email }).then(user => {
+      // Check if user exists
+      if (!user) {
+        return res.status(404).json({ emailnotfound: "Email not found" });
+      }
+  // Check password
+      bcrypt.compare(password, user.password).then(isMatch => {
+        if (isMatch) {
+          // User matched
+          // Create JWT Payload
+          const payload = {
+            id: user.id,
+            name: user.name,
+            userRole: user.userRole
+          };
+  // Sign token
+          jwt.sign(
+            payload,
+            keys.secretOrKey,
+            {
+              expiresIn: 31556926 // 1 year in seconds
+            },
+            (err, token) => {
+              res.json({
+                success: true,
+                token: "Bearer " + token
+              });
+            }
+          );
+        } else {
+          return res
+            .status(400)
+            .json({ passwordincorrect: "Password incorrect" });
+        }
+      });
+    });
+  });
+
+  // @route POST api/users/updateRateMap
+  // @desc Update rate map
+  // @access Private
+  router.post("/updateRateMap", (req, res) => {
+    // Update rate map logic here
+    // Access the updated rateMap from the request body
+    const updatedRateMap = req.body;
+    const rateMapFilePath = path.join(__dirname, "../../client/src/utils/rateMap.json");
+    console.log('FILE PATH-----',rateMapFilePath)
+
+
+    // Write updated rateMap to ratemap.json file
+    console.log('File Exists?-----',fs.existsSync("../client/src/utils/rateMap.json"))
+    fs.writeFile(rateMapFilePath, JSON.stringify(updatedRateMap), (err) => {
+      if (err) {
+        // Return response indicating failure
+        res.status(400).json({ success: false, message: "Failed to update rate map" });
       } else {
-        return res
-          .status(400)
-          .json({ passwordincorrect: "Password incorrect" });
+        // Return response indicating success
+        res.json({ success: true, message: "Rate map updated successfully" });
       }
     });
   });
-});
+
 
 module.exports = router;
