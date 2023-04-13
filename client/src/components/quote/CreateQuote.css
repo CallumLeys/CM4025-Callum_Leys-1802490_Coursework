@@ -34,9 +34,6 @@
     color: #999;
     pointer-events: none;
   }
-<<<<<<< HEAD
-  
-=======
   
   .success-message {
     position: fixed;
@@ -61,4 +58,3 @@
   .btn {
     margin-top: 10px;
   }
->>>>>>> backup-master

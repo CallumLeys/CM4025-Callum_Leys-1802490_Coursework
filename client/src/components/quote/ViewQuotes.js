@@ -1,44 +1,3 @@
-<<<<<<< HEAD
-import React, { useEffect } from "react";
-import PropTypes from "prop-types";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchQuotes } from "../../actions/quoteActions";
-import { Link } from "react-router-dom";
-
-const ViewQuotes = ({ email }) => {
-    const dispatch = useDispatch();
-    const quotes = useSelector(state => state.quotes);
-  
-    useEffect(() => {
-      // Fetch quotes from backend with email
-      dispatch(fetchQuotes(email));
-    }, [dispatch, email]);
-
-  return (
-    <div>
-      <h1>Quotes {console.log(quotes)}</h1>
-      <ul>
-        {quotes?.map(quote => (
-          <li key={quote._id}>{quote.quoteName}</li>
-        ))}
-      </ul>
-      <Link
-        to="/dashboard"
-        style={{
-          width: "140px",
-          borderRadius: "3px",
-          letterSpacing: "1.5px"
-        }}
-        className="btn btn-large btn-flat waves-effect white black-text"
-      >
-        Back
-      </Link>
-    </div>
-  );
-};
-
-export default ViewQuotes;
-=======
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { deleteQuote, fetchQuotes, viewQuote } from "../../actions/quoteActions";
@@ -61,7 +20,6 @@ const ViewQuotes = ({}) => {
       // Fetch quotes from backend with email
       dispatch(fetchQuotes(email)).then(response => {
         setQuotes(response); // Update the quotes state with the response
-        console.log("Response:", response); // Log the response when dispatch is successful
       }).catch(error => {
         console.log("Error:", error); // Log any error that occurred during dispatch
       });
@@ -104,7 +62,6 @@ const ViewQuotes = ({}) => {
         setSelectedQuotes(selectedQuotes.filter((id) => id !== quoteId));
         console.log("Removed ", quoteId)
       }
-      console.log(selectedQuotes)
     };
     
 
@@ -250,4 +207,3 @@ const ViewQuotes = ({}) => {
 };
 
 export default ViewQuotes;
->>>>>>> backup-master

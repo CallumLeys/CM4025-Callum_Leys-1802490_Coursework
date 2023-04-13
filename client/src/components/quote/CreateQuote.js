@@ -6,10 +6,6 @@ import "./CreateQuote.css"
 
 const CreateQuote = ({}) => {
 
-<<<<<<< HEAD
-  const auth = useSelector((state) => state.auth);
-  const [quoteName, setQuoteName] = useState(""); // State for overall quote name
-=======
   const auth = useSelector((state) => state.auth); // state for user auth
   const [quoteName, setQuoteName] = useState(""); // State for overall quote name
   const [showSuccess, setShowSuccess] = useState(false); // State to manage visibility of success message
@@ -19,7 +15,6 @@ const CreateQuote = ({}) => {
     setSubtasks([]);
   }, []);
 
->>>>>>> backup-master
   const [subtasks, setSubtasks] = useState([{
             subtaskName: "", 
             humanResources: [
@@ -30,30 +25,14 @@ const CreateQuote = ({}) => {
             ]
   }]); // State for subtasks
 
-<<<<<<< HEAD
-  useEffect(() => {
-    setSubtasks([]);
-  }, []);
-
-  const [showSuccess, setShowSuccess] = useState(false); // State to manage visibility of success message
-  const errors = useSelector((state) => state.errors);
-  const dispatch = useDispatch();
-
-=======
   // handle change in quote name
->>>>>>> backup-master
   const handleQuoteNameChange = (e) => {
     setQuoteName(e.target.value);
   };
 
 // ------------------------------------------------------ SUBTASK ACTIONS ------------------------------------------------------
-<<<<<<< HEAD
-// Function to handle changes in subtask name
-const handleSubtaskChange = (e, index) => {
-=======
   // handling change of subtask name
   const handleSubtaskChange = (e, index) => {
->>>>>>> backup-master
     const { value } = e.target;
     setSubtasks(prevSubtasks => {
       const updatedSubtasks = [...prevSubtasks];
@@ -62,42 +41,16 @@ const handleSubtaskChange = (e, index) => {
     });
   };
 
-<<<<<<< HEAD
-=======
   // handle adding a subtask
->>>>>>> backup-master
   const handleAddSubtask = () => {
     setSubtasks([...subtasks, { subtaskName: "", humanResources: [], physicalResources: [] }]);
   };
 
-<<<<<<< HEAD
-=======
   // handle removing a subtask
->>>>>>> backup-master
   const handleRemoveSubtask = (index) => {
     const updatedSubtasks = [...subtasks];
     updatedSubtasks.splice(index, 1);
     setSubtasks(updatedSubtasks);
-<<<<<<< HEAD
-};
-
-// ------------------------------------------------------ HUMAN RESOURCE ACTIONS ------------------------------------------------------
-const handleAddHumanResource = (subtaskIndex) => {
-  const updatedSubtasks = [...subtasks];
-  updatedSubtasks[subtaskIndex].humanResources.push({hrJobDescription: "", hrHours: 0, hrRate: []});
-  setSubtasks(updatedSubtasks);
-};
-
-const handleRemoveHumanResource = (subtaskIndex, hrIndex) => {
-  const updatedSubtasks = [...subtasks];
-  updatedSubtasks[subtaskIndex].humanResources.splice(hrIndex, 1);
-  setSubtasks(updatedSubtasks);
-};
-
-
-// Handle change in human resource jobDescription
-const handleSubtaskHumanResourceJobDescriptionChange = (e, index, hrIndex) => {
-=======
   };
 
 // ------------------------------------------------------ HUMAN RESOURCE ACTIONS ------------------------------------------------------
@@ -117,31 +70,21 @@ const handleSubtaskHumanResourceJobDescriptionChange = (e, index, hrIndex) => {
 
   // handle change in human resource jobDescription
   const handleSubtaskHumanResourceJobDescriptionChange = (e, index, hrIndex) => {
->>>>>>> backup-master
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
     updatedSubtasks[index].humanResources[hrIndex].hrJobDescription = value;
     setSubtasks(updatedSubtasks);
   };
 
-<<<<<<< HEAD
-// Handle change in human resource hours
-const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
-=======
   // handle change in human resource hours
   const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
->>>>>>> backup-master
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
     updatedSubtasks[index].humanResources[hrIndex].hrHours = value;
     setSubtasks(updatedSubtasks);
   };
   
-<<<<<<< HEAD
-  // Handle change in human resource rate
-=======
   // handle change in human resource rate
->>>>>>> backup-master
   const handleSubtaskHumanResourceRateChange = (e, index, hrIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
@@ -151,54 +94,29 @@ const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
 
 
 // ------------------------------------------------------ PHYSICAL RESOURCE ACTIONS ------------------------------------------------------
-<<<<<<< HEAD
-  // Function to handle adding a physical resource to a subtask
-const handleAddPhysicalResource = (subtaskIndex) => {
-=======
   // handle adding a physical resource to a subtask
   const handleAddPhysicalResource = (subtaskIndex) => {
->>>>>>> backup-master
     const updatedSubtasks = [...subtasks];
     updatedSubtasks[subtaskIndex].physicalResources.push({prResourceType: [], prDescription: "", prCost: "", prHours: ""});
     setSubtasks(updatedSubtasks);
   };
   
-<<<<<<< HEAD
-  // Function to handle removing a physical resource from a subtask
-=======
   // handle removing a physical resource from a subtask
->>>>>>> backup-master
   const handleRemovePhysicalResource = (subtaskIndex, prIndex) => {
     const updatedSubtasks = [...subtasks];
     updatedSubtasks[subtaskIndex].physicalResources.splice(prIndex, 1);
     setSubtasks(updatedSubtasks);
   };
 
-<<<<<<< HEAD
-  // Function to handle changes in Resource Type
-  const handleSubtaskResourceTypeChange = (e, index, prIndex) => {
-      const { value } = e.target;
-      const updatedSubtasks = [...subtasks];
-      if (value === 'one-off') {
-        updatedSubtasks[index].physicalResources[prIndex].prDescription = '';
-        updatedSubtasks[index].physicalResources[prIndex].prCost = 0;
-        updatedSubtasks[index].physicalResources[prIndex].prHours = 0;
-      }
-=======
   // handle changes in Resource Type
   const handleSubtaskResourceTypeChange = (e, index, prIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
->>>>>>> backup-master
     updatedSubtasks[index].physicalResources[prIndex].prResourceType = value;
     setSubtasks(updatedSubtasks);
   };
   
-<<<<<<< HEAD
-  // Function to handle changes in Description
-=======
   // handle changes in Description
->>>>>>> backup-master
   const handleSubtaskDescriptionChange = (e, index, prIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
@@ -206,11 +124,7 @@ const handleAddPhysicalResource = (subtaskIndex) => {
     setSubtasks(updatedSubtasks);
   };
   
-<<<<<<< HEAD
-  // Function to handle changes in Cost
-=======
   // handle changes in Cost
->>>>>>> backup-master
   const handleSubtaskCostChange = (e, index, prIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
@@ -218,11 +132,7 @@ const handleAddPhysicalResource = (subtaskIndex) => {
     setSubtasks(updatedSubtasks);
   };
   
-<<<<<<< HEAD
-  // Function to handle changes in Hours
-=======
   // handle changes in Hours
->>>>>>> backup-master
   const handleSubtaskHoursChange = (e, index, prIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
@@ -240,10 +150,6 @@ const handleAddPhysicalResource = (subtaskIndex) => {
           email: auth.user.email,
           subtasks: subtasks
         };
-        console.log("Quote Data", quoteData)
-<<<<<<< HEAD
-        dispatch(createQuote(quoteData));
-=======
         dispatch(createQuote(quoteData)).then(() => {
           // Clear all inputs
           setQuoteName("");
@@ -253,7 +159,6 @@ const handleAddPhysicalResource = (subtaskIndex) => {
         .catch((err) => {
           console.log(err);
         });;
->>>>>>> backup-master
   };
 
   const handleCloseSuccess = () => {
@@ -263,13 +168,7 @@ const handleAddPhysicalResource = (subtaskIndex) => {
   // ------------------------------------------------------ RENDER ------------------------------------------------------
   return (
 <div>
-<<<<<<< HEAD
-  <h1 style={{ fontSize: '24px', textAlign: 'center', background: '#e0e0e0', padding: '10px' }}>
-     Create Quote
-  </h1>
-=======
   <h1>Create Quote</h1>
->>>>>>> backup-master
   <div className="quote-name" style={{marginRight: '20%', marginLeft: '20%'}}>
     <label htmlFor="quoteName" style={{color: 'black'}}>Quote Name:</label>
     <input
@@ -441,11 +340,7 @@ const handleAddPhysicalResource = (subtaskIndex) => {
             </div>
                 <button onClick={() => handleRemoveSubtask(index)} className="btn btn-small red" style={{ marginTop: '10px' }}>
                     Remove Subtask
-<<<<<<< HEAD
-                    </button>
-=======
                 </button>
->>>>>>> backup-master
             </div>
     ))}
     {/*  // ------------------------------------------------------ END OF SUBTASK ------------------------------------------------------ */}
@@ -474,16 +369,6 @@ const handleAddPhysicalResource = (subtaskIndex) => {
     
   </div>
   {showSuccess && (
-<<<<<<< HEAD
-    <div className="success-msg">
-      <p>Quote created successfully!</p>
-      <button onClick={handleCloseSuccess} className="btn btn-small">
-        Close
-      </button>
-    </div>
-  )}
-</div>
-=======
       <div className="success-message">
         <div className="success-message-content">
           <p>Quote Created Successfully!</p>
@@ -503,7 +388,6 @@ const handleAddPhysicalResource = (subtaskIndex) => {
     <p><b>A 'Fudge Factor' is considered into the final price for security reasons</b></p>
   </div>
   </div>
->>>>>>> backup-master
 );};
 
 export default CreateQuote;

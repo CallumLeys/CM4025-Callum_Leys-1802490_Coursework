@@ -23,7 +23,7 @@ mongoose
     { useNewUrlParser: true }
   )
   .then(() => console.log("Server up and running on http://localhost:5000/"))
-  .catch(err => console.log('Erorr Test', err));
+  .catch(err => console.log('Erorr', err));
 
 // Passport middleware
 app.use(passport.initialize());

@@ -7,12 +7,8 @@ const Login = ({history}) => {
 
   const [state, setState] = useState({
         email: "",
-<<<<<<< HEAD
-        password: ""
-=======
         password: "",
         userRole: ""
->>>>>>> backup-master
   });
 
   const dispatch = useDispatch();
@@ -23,10 +19,7 @@ const Login = ({history}) => {
   useEffect(() => {
     if (auth.isAuthenticated) {
       history.push("/dashboard");
-<<<<<<< HEAD
-=======
       navigate("/dashboard");
->>>>>>> backup-master
     }
   }, [auth.isAuthenticated, history]);
   
@@ -40,12 +33,8 @@ const Login = ({history}) => {
     
     const userData = {
         email: state.email,
-<<<<<<< HEAD
-        password: state.password
-=======
         password: state.password,
         userRole: state.userRole
->>>>>>> backup-master
     };
         
     // Dispatch the loginUser action

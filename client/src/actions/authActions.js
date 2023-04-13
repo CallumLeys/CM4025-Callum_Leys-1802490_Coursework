@@ -1,7 +1,6 @@
 import axios from "axios";
 import setAuthToken from "../utils/setAuthToken";
 import jwt_decode from "jwt-decode";
-import { useNavigate } from "react-router-dom";
 import {
   GET_ERRORS,
   SET_CURRENT_USER,
@@ -54,8 +53,6 @@ export const loginUser = (userData) => dispatch => {
           iat: decoded.iat,
           exp: decoded.exp
         };
-        console.log('payloadTest----', payload)
-        console.log('decoded', decoded)
         // Set current user
         dispatch(setCurrentUser(payload));
         resolve(); // Resolve the Promise

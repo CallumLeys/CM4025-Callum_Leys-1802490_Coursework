@@ -104,11 +104,8 @@ router.post("/register", (req, res) => {
     // Access the updated rateMap from the request body
     const updatedRateMap = req.body;
     const rateMapFilePath = path.join(__dirname, "../../client/src/utils/rateMap.json");
-    console.log('FILE PATH-----',rateMapFilePath)
-
 
     // Write updated rateMap to ratemap.json file
-    console.log('File Exists?-----',fs.existsSync("../client/src/utils/rateMap.json"))
     fs.writeFile(rateMapFilePath, JSON.stringify(updatedRateMap), (err) => {
       if (err) {
         // Return response indicating failure

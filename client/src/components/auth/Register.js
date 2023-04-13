@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { registerUser } from "../../actions/authActions";
 import classnames from "classnames";
 
@@ -19,26 +17,17 @@ const Register = ({history}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const auth = useSelector(state => state.auth);
-
-<<<<<<< HEAD
-=======
   useEffect(() => {
     if (auth.isAuthenticated) {
       history.push("/dashboard");
       navigate("/dashboard");
     }
   }, [auth.isAuthenticated, history]);
-
->>>>>>> backup-master
   const onChange = (e) => {
     setState({ ...state, [e.target.id]: e.target.value });
   };
 
-<<<<<<< HEAD
-  const onSubmit = (e) => {
-=======
   const onSubmit = e => {
->>>>>>> backup-master
     e.preventDefault();
 
     const newUser = {
@@ -51,25 +40,6 @@ const Register = ({history}) => {
     // validate input fields
     const validationErrors = {};
     // validation logic
-<<<<<<< HEAD
-    if (!state.name) { // is name?
-      validationErrors.name = "Name field is required";
-    }
-    if (!state.email) { // is email?
-      validationErrors.email = "Email field is required";
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!state.email.match(emailRegex)) { // email type validation
-      validationErrors.email = "Email is invalid";
-    }
-    if (!state.password) { // is password?
-      validationErrors.password = "Password field is required";
-    }
-    if (state.password.length < 8) { // password length
-      validationErrors.password = "Password must be at least 8 characters";
-    }
-    if (state.password !== state.password2) { // password match
-=======
     if (!state.name) {
       validationErrors.name = "Name field is required";
     }
@@ -87,23 +57,11 @@ const Register = ({history}) => {
       validationErrors.password = "Password must be at least 8 characters";
     }
     if (state.password !== state.password2) {
->>>>>>> backup-master
       validationErrors.password2 = "Passwords must match";
     }
 
     // set errors state
     setErrors(validationErrors);
-<<<<<<< HEAD
-    
-    // If there are no validation errors, proceed with registering the new user
-    if (Object.keys(validationErrors).length === 0) {
-      
-      dispatch(registerUser(newUser, history));
-      console.log(auth)
-      if (auth.isAuthenticated) {
-        navigate("/dashboard");
-      }
-=======
 
     // If there are no validation errors, proceed with registering the new user
     if (Object.keys(validationErrors).length === 0) {
@@ -112,7 +70,6 @@ const Register = ({history}) => {
       }).catch(() => {
         console.log("Error")
       });
->>>>>>> backup-master
     }
   };
 
