@@ -17,7 +17,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import CreateQuote from "./components/quote/CreateQuote";
 import ViewQuotes from "./components/quote/ViewQuotes";
 import ViewQuote from "./components/quote/ViewQuote";
-import Settings from "./components/admin/Settings";
+import Settings from "./components/admin/settings";
 import "./App.css";
 
 const history = createBrowserHistory();
