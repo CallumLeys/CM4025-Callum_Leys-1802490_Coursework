@@ -12,17 +12,25 @@ import {
 
 // Register User
 export const registerUser = (userData, history) => dispatch => {
-  axios
-    .post("/api/users/register", userData)
-    //.then(() => console.log(history))
-    .then(res => history.push("/login"))
-    .catch(err =>
-      dispatch({
-        type: GET_ERRORS,
-        payload: err.response.data
+  return new Promise((resolve, reject) => {
+    axios
+      .post("/api/users/register", userData)
+      .then(res => {
+        // Successful registration
+        history.push("/login");
+        resolve(res.data); // resolve with the response data
       })
-    );
+      .catch(err => {
+        // Failed registration
+        dispatch({
+          type: GET_ERRORS,
+          payload: err.response.data
+        });
+        reject(err.response.data); // reject with the error response data
+      });
+  });
 };
+
 
 // Login - get user token
 export const loginUser = (userData) => dispatch => {
@@ -41,10 +49,13 @@ export const loginUser = (userData) => dispatch => {
         const payload = {
           id: decoded.id,
           name: decoded.name,
-          email: userData.email, // Add an extra email field
+          email: userData.email,
+          userRole: decoded.userRole,
           iat: decoded.iat,
           exp: decoded.exp
         };
+        console.log('payloadTest----', payload)
+        console.log('decoded', decoded)
         // Set current user
         dispatch(setCurrentUser(payload));
         resolve(); // Resolve the Promise
@@ -82,4 +93,20 @@ export const logoutUser = () => dispatch => {
   setAuthToken(false);
   // Set current user to empty object {} which will set isAuthenticated to false
   dispatch(setCurrentUser({}));
+
+};
+
+// Update rateMap
+export const updateRateMap = (editedRateMap) => async (dispatch) => {
+  try {
+    // Make a HTTP request to backend API to update rateMap
+    const response = await axios.post("/api/users/updateRateMap", editedRateMap);
+    if (response.data.success) {
+      console.log("RateMap updated successfully");
+    } else {
+      console.error("Failed to update RateMap");
+    }
+  } catch (error) {
+    console.error("Failed to update RateMap", error);
+  }
 };

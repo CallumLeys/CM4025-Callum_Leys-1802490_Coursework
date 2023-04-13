@@ -20,11 +20,25 @@ const Register = ({history}) => {
   const navigate = useNavigate();
   const auth = useSelector(state => state.auth);
 
+<<<<<<< HEAD
+=======
+  useEffect(() => {
+    if (auth.isAuthenticated) {
+      history.push("/dashboard");
+      navigate("/dashboard");
+    }
+  }, [auth.isAuthenticated, history]);
+
+>>>>>>> backup-master
   const onChange = (e) => {
     setState({ ...state, [e.target.id]: e.target.value });
   };
 
+<<<<<<< HEAD
   const onSubmit = (e) => {
+=======
+  const onSubmit = e => {
+>>>>>>> backup-master
     e.preventDefault();
 
     const newUser = {
@@ -37,6 +51,7 @@ const Register = ({history}) => {
     // validate input fields
     const validationErrors = {};
     // validation logic
+<<<<<<< HEAD
     if (!state.name) { // is name?
       validationErrors.name = "Name field is required";
     }
@@ -54,11 +69,31 @@ const Register = ({history}) => {
       validationErrors.password = "Password must be at least 8 characters";
     }
     if (state.password !== state.password2) { // password match
+=======
+    if (!state.name) {
+      validationErrors.name = "Name field is required";
+    }
+    if (!state.email) {
+      validationErrors.email = "Email field is required";
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!state.email.match(emailRegex)) {
+      validationErrors.email = "Email is invalid";
+    }
+    if (!state.password) {
+      validationErrors.password = "Password field is required";
+    }
+    if (state.password.length < 8) {
+      validationErrors.password = "Password must be at least 8 characters";
+    }
+    if (state.password !== state.password2) {
+>>>>>>> backup-master
       validationErrors.password2 = "Passwords must match";
     }
 
     // set errors state
     setErrors(validationErrors);
+<<<<<<< HEAD
     
     // If there are no validation errors, proceed with registering the new user
     if (Object.keys(validationErrors).length === 0) {
@@ -68,6 +103,16 @@ const Register = ({history}) => {
       if (auth.isAuthenticated) {
         navigate("/dashboard");
       }
+=======
+
+    // If there are no validation errors, proceed with registering the new user
+    if (Object.keys(validationErrors).length === 0) {
+      dispatch(registerUser(newUser, history)).then(() => {
+        navigate("/login");
+      }).catch(() => {
+        console.log("Error")
+      });
+>>>>>>> backup-master
     }
   };
 

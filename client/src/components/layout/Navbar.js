@@ -1,10 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
+<<<<<<< HEAD
 import { connect } from "react-redux";
 import { logoutUser } from "../../actions/authActions";
 
 const Navbar = ({ auth, logoutUser }) => {
+=======
+import { connect, useSelector } from "react-redux";
+import { logoutUser } from "../../actions/authActions";
+
+const Navbar = ({ auth, logoutUser }) => {
+  const userRole = auth.user.userRole;
+>>>>>>> backup-master
   const onLogoutClick = (e) => {
     e.preventDefault();
     logoutUser();
@@ -15,7 +23,11 @@ const Navbar = ({ auth, logoutUser }) => {
       return (
         <ul className="right">
           <li>
+<<<<<<< HEAD
             <span className="black-text">{`Welcome, ${auth.user.name}`}</span>
+=======
+          <span className="black-text" style={{ marginRight: "16px" }}>{`Welcome, ${auth.user.name}`}</span>
+>>>>>>> backup-master
           </li>
           <li>
             <button
@@ -59,6 +71,18 @@ const Navbar = ({ auth, logoutUser }) => {
             <i className="material-icons">code</i>
             CleysQuotes
           </Link>
+<<<<<<< HEAD
+=======
+          {userRole === "admin" && (
+            <ul className="left">
+              <li>
+                <Link to="/settings" className="black-text">
+                  Settings
+                </Link>
+              </li>
+            </ul>
+          )}
+>>>>>>> backup-master
           {renderAuthButtons()}
         </div>
       </nav>

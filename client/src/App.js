@@ -16,12 +16,12 @@ import PrivateRoute from "./components/private-route/PrivateRoute";
 import Dashboard from "./components/dashboard/Dashboard";
 import CreateQuote from "./components/quote/CreateQuote";
 import ViewQuotes from "./components/quote/ViewQuotes";
-
+import ViewQuote from "./components/quote/ViewQuote";
+import Settings from "./components/admin/Settings";
 import "./App.css";
 
 const history = createBrowserHistory();
 
-/*
 // Check for token to keep user logged in
 if (localStorage.jwtToken) {
   // Set auth token header auth
@@ -36,12 +36,10 @@ if (localStorage.jwtToken) {
   if (decoded.exp < currentTime) {
     // Logout user
     store.dispatch(logoutUser());
-
     // Redirect to login
     window.location.href = "./login";
   }
 }
-*/
 
 class App extends Component {
   render() {
@@ -69,6 +67,18 @@ class App extends Component {
                 path="/view-quotes"
                 element={
                   <PrivateRoute component={<ViewQuotes />}/>
+                }
+              />
+              <Route 
+                path="/view-quote"
+                element={
+                  <PrivateRoute component={<ViewQuote />}/>
+                }
+              />
+              <Route 
+                path="/settings"
+                element={
+                  <PrivateRoute component={<Settings />} isAdminRoute={true}/>
                 }
               />
             </Routes>
