@@ -49,14 +49,17 @@ export const fetchQuotes = (email) => dispatch => {
   axios
     .get(`/api/quotes/all?email=${email}`)
     .then(res => {
+      // quotes are fetched
       dispatch({
         type: GET_QUOTES,
         payload: res
       });
       resolve(res.data);
+      // show success message
       console.log("Successfully fetched quotes!");
     })
     .catch(err => {
+      // error viewing quote
       console.error("Failed to fetch quotes:", err);
       dispatch({ type: GET_ERRORS, payload: err.response.data });
       reject(err.response.data);
@@ -72,16 +75,16 @@ export const deleteQuote = (quoteId, email) => (dispatch) => {
       axios
         .delete(`/api/quotes/delete/${quoteId}`)
         .then((res) => {
-          // If the quote is successfully deleted, you can dispatch an action to handle the success case, e.g. showing a success message
+          // quote successfully deleted
           console.log(`Quote with ID: ${quoteId} deleted successfully`);
           // show a success message
           dispatch({ type: SHOW_SUCCESS_MESSAGE, payload: "Quote created successfully" });
           // Fetch updated quotes after successful deletion
           dispatch(fetchQuotes(email));
-          resolve(res.data); // Resolve with response data
+          resolve(res.data);
         })
         .catch((err) => {
-          // If there is an error while deleting the quote, you can dispatch an action to handle the error case, e.g. showing an error message
+          // error while deleting the quote
           console.error(`Failed to delete quote with ID: ${quoteId}`, err.response.data);
           dispatch({ type: GET_ERRORS, payload: err.response.data });
           reject(err.response.data); // Reject with error object

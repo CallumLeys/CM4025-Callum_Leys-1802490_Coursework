@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { editQuote } from "../../actions/quoteActions";
 import "./CreateQuote.css"
 
 const ViewQuote = ({}) => {
+    // set variables for the current quote, the new quote and success messages
     const viewQuote = useSelector(state => state.quotes.quote[0]);
     const [quote, setQuote] = useState(viewQuote);
     const [showSuccess, setShowSuccess] = useState(false);
     const dispatch = useDispatch();  
 
     // ---------------------------------------- Subtask-level Functions ----------------------------------------
+    // handler for subtask name updates
     const handleSubtaskChange = (e, index) => {
         const { value } = e.target;
         setQuote(prevState => {
@@ -21,6 +23,7 @@ const ViewQuote = ({}) => {
         });
     };
 
+    // handler for adding a subtask
     const handleAddSubtask = () => {
         setQuote(prevState => {
           return {
@@ -33,6 +36,7 @@ const ViewQuote = ({}) => {
         });
       };
       
+    // handler for removing a subtask
     const handleRemoveSubtask = (index) => {
         setQuote(prevState => {
           const updatedSubtasks = [...prevState.subtasks];
@@ -44,7 +48,7 @@ const ViewQuote = ({}) => {
         });
     };
       
-
+    // handler for changing the name of the quote
     const handleQuoteNameChange = (e) => {
         setQuote(prevState => {
             prevState.quoteName = e.target.value
@@ -54,28 +58,32 @@ const ViewQuote = ({}) => {
     };
 
     // ---------------------------------------- Submit Functions ----------------------------------------
+    // submit funtionality
     const onSubmit = (e) => {
         e.preventDefault();
+        // set the quoteData to the newly edited quote
         const quoteData = quote;
+        // bug where it adds HR and PR arrays to top-level quote. Should be within subtask (Which it already is)
+        // delete duplicate values
         delete quoteData.humanResources;
         delete quoteData.physicalResources;
-        console.log('quoteDATA---',quoteData);
+        // edit the quote on the backend
           dispatch(editQuote(quoteData)).then(() => {
             setShowSuccess(true); // Show success message
           })
           .catch((err) => {
-            // Handle error, e.g. show error message
-            console.log(err);
+            console.log(err); // Show error message
           });
     };
 
+    // handler for closing the success message prompt
     const handleCloseSuccess = () => {
         // Hide success message
         setShowSuccess(false);
     };
 
     // ---------------------------------------- Human Resources Functions ----------------------------------------
-    // Function to handle HR Description change
+    // handle HR Description change
     const handleHRDescriptionChange = (e, index, hrIndex) => {
         const { value } = e.target;
         setQuote((prevState) => {
@@ -86,7 +94,7 @@ const ViewQuote = ({}) => {
         });
     };
     
-    // Function to handle HR Hours change
+    // handle HR Hours change
     const handleHRHoursChange = (e, index, hrIndex) => {
         const { value } = e.target;
         setQuote((prevState) => {
@@ -97,7 +105,7 @@ const ViewQuote = ({}) => {
         });
     };
     
-    // Function to handle HR Rate change
+    // handle HR Rate change
     const handleHRRateChange = (e, index, hrIndex) => {
         const { value } = e.target;
         setQuote((prevState) => {
@@ -108,25 +116,20 @@ const ViewQuote = ({}) => {
         });
     };
 
-    // Function to handle adding a human resource to a subtask
+    // handle adding a human resource to a subtask
     const handleAddHR = (index) => {
-        // Create a copy of the subtask object to avoid modifying the original state directly
         const updatedQuote = { ...quote };
         const subtask = updatedQuote.subtasks[index];
-        // Add the human resource item to the humanResources array
         subtask.humanResources.push({hrJobDescription: "", hrHours: 0, hrRate: []});
-        // Call the state update function to update the subtask state with the modified array
         setQuote(updatedQuote);
     };
 
+    // handle removing a human resource from subtask
     const handleRemoveHR = (index, hrIndex) => {
-        // Create a copy of the subtask object to avoid modifying the original state directly
         const updatedQuote = { ...quote };
         const subtask = updatedQuote.subtasks[index];
         if (subtask.humanResources.length > 1) {
-            // Remove the human resource item at the specified index from the humanResources array
             subtask.humanResources.splice(hrIndex, 1);
-            // Call the state update function to update the subtask state with the modified array
             setQuote(updatedQuote);
         } else {
             // Display a message indicating that at least one human resource must be saved
@@ -135,6 +138,7 @@ const ViewQuote = ({}) => {
     };
 
     // ---------------------------------------- Physical Resources Functions ----------------------------------------
+    // handler for resource type changes
     const handlePRResourceTypeChange = (e, index, prIndex) => {
         const { value } = e.target;
         setQuote((prevState) => {
@@ -145,6 +149,7 @@ const ViewQuote = ({}) => {
         });
     };
 
+    // handler for description changes
     const handlePRDescriptionChange = (e, index, prIndex) => {
         const { value } = e.target;
         setQuote((prevState) => {
@@ -155,6 +160,7 @@ const ViewQuote = ({}) => {
         });
     };
 
+    // handler for cost changes
     const handlePRCostChange = (e, index, prIndex) => {
         const { value } = e.target;
         setQuote((prevState) => {
@@ -165,6 +171,7 @@ const ViewQuote = ({}) => {
         });
     };
 
+    // handler for hours changes
     const handlePRHoursChange = (e, index, prIndex) => {
         const { value } = e.target;
         setQuote((prevState) => {
@@ -175,24 +182,19 @@ const ViewQuote = ({}) => {
         });
     };
 
-    // Function to handle adding a physical resource to a subtask
+    // handler for adding a physical resource to the subtask
     const handleAddPR = (index) => {
-        // Create a copy of the subtask object to avoid modifying the original state directly
         const updatedQuote = { ...quote };
         const subtask = updatedQuote.subtasks[index];
-        // Add the phyiscal resource item to the physicalResources array
         subtask.physicalResources.push({prResourceType: [], prDescription: "", prCost: "", prHours: ""});
-        // Call the state update function to update the subtask state with the modified array
         setQuote(updatedQuote);
     };
 
+    // handler for removing a physical resource from the subtask
     const handleRemovePR = (index, prIndex) => {
-        // Create a copy of the subtask object to avoid modifying the original state directly
         const updatedQuote = { ...quote };
         const subtask = updatedQuote.subtasks[index];
-        // Remove the phyiscal resource item at the specified index from the physicalResources array
         subtask.physicalResources.splice(prIndex, 1);
-        // Call the state update function to update the subtask state with the modified array
         setQuote(updatedQuote);
     };
 
@@ -208,6 +210,7 @@ const ViewQuote = ({}) => {
                 onChange={(e) => handleQuoteNameChange(e)}
             />
           </div>
+            {/* ------------------------------ START SUBTASK RENDERING ------------------------------ */}
             {quote.subtasks.map((subtask, index) => (
             <div key={index} style={{marginLeft: '20%', marginRight: '20%'}}>
                 <p style={{backgroundColor: "rgba(128, 128, 128, 0.3)"}}>Subtask Name:</p>
@@ -223,6 +226,7 @@ const ViewQuote = ({}) => {
                     Add Physical Resource
                 </button>
                 <p style={{backgroundColor: "rgba(128, 128, 128, 0.3)", marginRight: '50%'}}>Human Resources</p>
+                {/* ------------------------------ START HR RENDERING ------------------------------ */}
                 <ul>
                 {subtask.humanResources.map((humanResource, hrIndex) => (
                     <React.Fragment key={`hr-${hrIndex}`}>
@@ -260,6 +264,8 @@ const ViewQuote = ({}) => {
                     </React.Fragment>
                 ))}
                 </ul>
+                {/* ------------------------------ END HR RENDERING ------------------------------ */}
+                {/* ------------------------------ START PR RENDERING ------------------------------ */}
                 <p style={{backgroundColor: "rgba(128, 128, 128, 0.3)", marginRight: '50%'}}>Physical Resources</p>
                 <ul>
                 {subtask.physicalResources.map((physicalResource, prIndex) => (
@@ -313,12 +319,14 @@ const ViewQuote = ({}) => {
                     </li>
                     </React.Fragment>
                 ))}
+                {/* ------------------------------ END PR RENDERING ------------------------------ */}
                 </ul>
                 <button onClick={() => handleRemoveSubtask(index)} className="btn btn-small red" style={{ marginTop: '10px' }}>
                     Remove Subtask
                 </button>
             </div>
             ))}
+            {/* ------------------------------ END SUBTASK RENDERING ------------------------------ */}
             <button onClick={handleAddSubtask} className="btn btn-small" style={{ marginTop: '10px', marginLeft: '20%'}}>
             Add Subtask
             </button>

@@ -6,8 +6,15 @@ import "./CreateQuote.css"
 
 const CreateQuote = ({}) => {
 
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth); // state for user auth
   const [quoteName, setQuoteName] = useState(""); // State for overall quote name
+  const [showSuccess, setShowSuccess] = useState(false); // State to manage visibility of success message
+  const dispatch = useDispatch();
+  
+  useEffect(() => {
+    setSubtasks([]);
+  }, []);
+
   const [subtasks, setSubtasks] = useState([{
             subtaskName: "", 
             humanResources: [
@@ -18,21 +25,14 @@ const CreateQuote = ({}) => {
             ]
   }]); // State for subtasks
 
-  useEffect(() => {
-    setSubtasks([]);
-  }, []);
-
-  const [showSuccess, setShowSuccess] = useState(false); // State to manage visibility of success message
-  const errors = useSelector((state) => state.errors);
-  const dispatch = useDispatch();
-
+  // handle change in quote name
   const handleQuoteNameChange = (e) => {
     setQuoteName(e.target.value);
   };
 
 // ------------------------------------------------------ SUBTASK ACTIONS ------------------------------------------------------
-// Function to handle changes in subtask name
-const handleSubtaskChange = (e, index) => {
+  // handling change of subtask name
+  const handleSubtaskChange = (e, index) => {
     const { value } = e.target;
     setSubtasks(prevSubtasks => {
       const updatedSubtasks = [...prevSubtasks];
@@ -41,47 +41,50 @@ const handleSubtaskChange = (e, index) => {
     });
   };
 
+  // handle adding a subtask
   const handleAddSubtask = () => {
     setSubtasks([...subtasks, { subtaskName: "", humanResources: [], physicalResources: [] }]);
   };
 
+  // handle removing a subtask
   const handleRemoveSubtask = (index) => {
     const updatedSubtasks = [...subtasks];
     updatedSubtasks.splice(index, 1);
     setSubtasks(updatedSubtasks);
-};
+  };
 
 // ------------------------------------------------------ HUMAN RESOURCE ACTIONS ------------------------------------------------------
-const handleAddHumanResource = (subtaskIndex) => {
-  const updatedSubtasks = [...subtasks];
-  updatedSubtasks[subtaskIndex].humanResources.push({hrJobDescription: "", hrHours: 0, hrRate: []});
-  setSubtasks(updatedSubtasks);
-};
+  // handle adding a HR to the subtask  
+  const handleAddHumanResource = (subtaskIndex) => {
+    const updatedSubtasks = [...subtasks];
+    updatedSubtasks[subtaskIndex].humanResources.push({hrJobDescription: "", hrHours: 0, hrRate: []});
+    setSubtasks(updatedSubtasks);
+  };
+  // handle removing a HR to the subtask  
+  const handleRemoveHumanResource = (subtaskIndex, hrIndex) => {
+    const updatedSubtasks = [...subtasks];
+    updatedSubtasks[subtaskIndex].humanResources.splice(hrIndex, 1);
+    setSubtasks(updatedSubtasks);
+  };
 
-const handleRemoveHumanResource = (subtaskIndex, hrIndex) => {
-  const updatedSubtasks = [...subtasks];
-  updatedSubtasks[subtaskIndex].humanResources.splice(hrIndex, 1);
-  setSubtasks(updatedSubtasks);
-};
 
-
-// Handle change in human resource jobDescription
-const handleSubtaskHumanResourceJobDescriptionChange = (e, index, hrIndex) => {
+  // handle change in human resource jobDescription
+  const handleSubtaskHumanResourceJobDescriptionChange = (e, index, hrIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
     updatedSubtasks[index].humanResources[hrIndex].hrJobDescription = value;
     setSubtasks(updatedSubtasks);
   };
 
-// Handle change in human resource hours
-const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
+  // handle change in human resource hours
+  const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
     updatedSubtasks[index].humanResources[hrIndex].hrHours = value;
     setSubtasks(updatedSubtasks);
   };
   
-  // Handle change in human resource rate
+  // handle change in human resource rate
   const handleSubtaskHumanResourceRateChange = (e, index, hrIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
@@ -91,21 +94,21 @@ const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
 
 
 // ------------------------------------------------------ PHYSICAL RESOURCE ACTIONS ------------------------------------------------------
-  // Function to handle adding a physical resource to a subtask
+  // handle adding a physical resource to a subtask
   const handleAddPhysicalResource = (subtaskIndex) => {
     const updatedSubtasks = [...subtasks];
     updatedSubtasks[subtaskIndex].physicalResources.push({prResourceType: [], prDescription: "", prCost: "", prHours: ""});
     setSubtasks(updatedSubtasks);
   };
   
-  // Function to handle removing a physical resource from a subtask
+  // handle removing a physical resource from a subtask
   const handleRemovePhysicalResource = (subtaskIndex, prIndex) => {
     const updatedSubtasks = [...subtasks];
     updatedSubtasks[subtaskIndex].physicalResources.splice(prIndex, 1);
     setSubtasks(updatedSubtasks);
   };
 
-  // Function to handle changes in Resource Type
+  // handle changes in Resource Type
   const handleSubtaskResourceTypeChange = (e, index, prIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
@@ -113,7 +116,7 @@ const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
     setSubtasks(updatedSubtasks);
   };
   
-  // Function to handle changes in Description
+  // handle changes in Description
   const handleSubtaskDescriptionChange = (e, index, prIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
@@ -121,7 +124,7 @@ const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
     setSubtasks(updatedSubtasks);
   };
   
-  // Function to handle changes in Cost
+  // handle changes in Cost
   const handleSubtaskCostChange = (e, index, prIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
@@ -129,7 +132,7 @@ const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
     setSubtasks(updatedSubtasks);
   };
   
-  // Function to handle changes in Hours
+  // handle changes in Hours
   const handleSubtaskHoursChange = (e, index, prIndex) => {
     const { value } = e.target;
     const updatedSubtasks = [...subtasks];
@@ -155,7 +158,6 @@ const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
           setShowSuccess(true); // Show success message
         })
         .catch((err) => {
-          // Handle error, e.g. show error message
           console.log(err);
         });;
   };
@@ -384,6 +386,7 @@ const handleSubtaskHumanResourceHoursChange = (e, index, hrIndex) => {
     <p><b>Single Subtask Cost = </b>all human resources + all physical resources</p>
     <p><b>Human Resources Cost = </b>sum of all human resource costs (hours * rate)</p>
     <p><b>Physical Resources Cost = </b>sum of all physical resource costs (EITHER <u>cost</u> if <b>Once-off</b> OR <u>cost * hours</u> if <b>Hourly</b>)</p>
+    <p><b>A 'Fudge Factor' is considered into the final price for security reasons</b></p>
   </div>
   </div>
 );};

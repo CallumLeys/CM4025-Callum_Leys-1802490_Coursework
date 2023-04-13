@@ -175,7 +175,7 @@ router.post("/create", (req, res) => {
       index++;
     });
     
-
+    // find the item by the quote id and then replace the quote name, cost and subtasks
     Quote.findByIdAndUpdate(_id, { 
       quoteName: newQuote.quoteName,
       subtasks: newQuote.subtasks,
