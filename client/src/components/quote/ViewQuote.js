@@ -6,9 +6,9 @@ import "./CreateQuote.css"
 
 const ViewQuote = ({}) => {
     const viewQuote = useSelector(state => state.quotes.quote[0]);
-    const [quote, setQuote] = useState(viewQuote); // Set the initial state with the quote subtask value
-    const [showSuccess, setShowSuccess] = useState(false); // State to manage visibility of success message
-    const dispatch = useDispatch();
+    const [quote, setQuote] = useState(viewQuote);
+    const [showSuccess, setShowSuccess] = useState(false);
+    const dispatch = useDispatch();  
 
     // ---------------------------------------- Subtask-level Functions ----------------------------------------
     const handleSubtaskChange = (e, index) => {
@@ -23,19 +23,27 @@ const ViewQuote = ({}) => {
 
     const handleAddSubtask = () => {
         setQuote(prevState => {
-            const updatedQuote = { ...prevState };
-            updatedQuote.subtasks.push({subtaskName: "", humanResources: [], physicalResources: []});
-            return updatedQuote;
+          return {
+            ...prevState,
+            subtasks: [
+              ...prevState.subtasks,
+              { subtaskName: "", humanResources: [], physicalResources: [] }
+            ]
+          };
         });
-    };
-    
-      const handleRemoveSubtask = (index) => {
+      };
+      
+    const handleRemoveSubtask = (index) => {
         setQuote(prevState => {
-            const updatedQuote = { ...prevState };
-            updatedQuote.subtasks.splice(index, 1);
-            return updatedQuote;
+          const updatedSubtasks = [...prevState.subtasks];
+          updatedSubtasks.splice(index, 1);
+          return {
+            ...prevState,
+            subtasks: updatedSubtasks
+          };
         });
     };
+      
 
     const handleQuoteNameChange = (e) => {
         setQuote(prevState => {
@@ -238,9 +246,10 @@ const ViewQuote = ({}) => {
                         <div style={{ flex: "1" }}>
                         HR Rate:
                         <select
-                            value={humanResource.hrRate}
+                            value={humanResource.hrRate.length ? humanResource.hrRate : 'Select Rate'}
                             onChange={(e) => handleHRRateChange(e, index, hrIndex)}
                         >
+                            <option value="">Select Rate</option>
                             <option value="Junior">Junior</option>
                             <option value="Standard">Standard</option>
                             <option value="Senior">Senior</option>
@@ -268,9 +277,10 @@ const ViewQuote = ({}) => {
                     <div style={{ flex: "1" }}>
                     Resource Type:
                     <select
-                        value={physicalResource.prResourceType}
+                        value={physicalResource.prResourceType.length ? physicalResource.prResourceType : 'Select Resource Type'}
                         onChange={(e) => handlePRResourceTypeChange(e, index, prIndex)}
                     >
+                        <option value="">Select Resource Type</option>
                         <option value="One-off">One-off</option>
                         <option value="Hourly">Hourly</option>
                     </select>
@@ -319,7 +329,7 @@ const ViewQuote = ({}) => {
             <button onClick={onSubmit}
                 className="btn"
                 style={{ marginTop: '20px', marginLeft: "10px"}}>
-                Submit
+                Save
             </button>
             {showSuccess && (
                 <div className="success-message">

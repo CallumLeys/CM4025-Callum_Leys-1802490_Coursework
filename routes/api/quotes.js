@@ -1,15 +1,14 @@
 const express = require("express");
 const router = express.Router();
+// authentiction
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const keys = require("../../config/keys");
-const passport = require("passport");
-// Load input validation
+// input validation
 const validateQuoteInput = require("../../validation/quote");
-// Load Quote model
+// quote and user model
 const Quote = require("../../models/Quote");
 const User = require("../../models/User");
-const mongoose = require("mongoose");
 
 // @route POST api/quotes/create
 // @desc Create a new quote
@@ -64,7 +63,7 @@ router.post("/create", (req, res) => {
         // Calculate human resource cost for the subtask
         const humanResourceCost = hrHours * rateValue;
         // Add human resource cost to total human resource cost
-        totalHumanResourceCost += humanResourceCost;
+        totalHumanResourceCost += parseInt(humanResourceCost);
       });
 
       // Iterate through physicalResources
@@ -116,27 +115,80 @@ router.post("/create", (req, res) => {
   });
 
 
-  // @route POST api/quotes/edit
+  // @route GET api/quotes/edit:id
   // @desc Edit quote by id
   // @access Private
-  router.put("/edit", (req, res) => {
+  router.put("/edit", (req, res) =>{
     const newQuote = req.body.quote;
-    const quoteId = req.body._id;
+    const _id = newQuote._id;
+    const fudgeFactor = newQuote.fudgeFactor;
+    let totalCost = 0;
+    let index = 0;
+    // Load the rateMap from the JSON file
+    const fs = require('fs'); // Import the fs module to read the JSON file
+    const rateMapPath = 'client/src/utils/rateMap.json';
+    const rateMap = JSON.parse(fs.readFileSync(rateMapPath, 'utf-8'));
+    const { errors, isValid } = validateQuoteInput(newQuote);
 
-    Quote.findByIdAndUpdate(quoteId, { quoteName: newQuote.quoteName }, { new: true })
-      .then(updatedQuote => {
-        if (!updatedQuote) {
-          // If no quote was found with the given _id
-          return res.status(404).json({ error: "Quote not found" });
-        }
-        console.log('Found and edited quote', updatedQuote);
-        // updatedQuote contains the updated quote document
-        res.json(updatedQuote);
-      })
-      .catch(err => {
-        console.error("Failed to edit quote:", err);
-        res.status(500).json({ error: "Failed to edit quote" });
+    // Check validation
+    if (!isValid) {
+      return res.status(400).json(errors);
+    }
+    
+    newQuote.subtasks.forEach(subtask => {
+      // reset subtask-level values
+      let subtaskTotal = 0;
+      let hrTotal = 0;
+      let prTotal = 0;
+
+      // for each HR, need to get HR value (hours*rate)
+      subtask.humanResources.forEach(hr => {
+        // calculate cost & add to hrTotal
+        const rateValue = rateMap[hr.hrRate] || 0;
+        hrTotal += hr.hrHours * rateValue;
       });
+
+      // for each PR, need to get PR value (if resType = 'hours' {hours*rate} else, fixed price)
+      subtask.physicalResources.forEach(pr => {
+        // if One-off
+        if (pr.prResourceType === 'One-off') {
+          // Add physical resource cost to total physical resource cost
+          prTotal += parseInt(pr.prCost);
+
+        } else if (pr.prResourceType === 'Hourly') {
+          // Multiply prCost by prHours for hourly resources
+          const totalCost = parseInt(pr.prCost) * parseInt(pr.prHours);
+          // Add physical resource cost to total physical resource cost
+          prTotal += totalCost;
+        }
+      });
+
+      // for each subtask, need to get subTask price (sum of all subtask HR and PR values)
+      // fudge subtasks values and save
+      subtaskTotal = (hrTotal+prTotal) * fudgeFactor
+
+      // save subtaskTotal into relevant newQuote.subtask[index].subtaskTotal item
+      newQuote.subtasks[index].subtaskTotal = subtaskTotal;
+
+      // need to get totalCost (sum of subtaskCosts)
+      totalCost+=subtaskTotal;
+      index++;
+    });
+    
+
+    Quote.findByIdAndUpdate(_id, { 
+      quoteName: newQuote.quoteName,
+      subtasks: newQuote.subtasks,
+      quoteCost: totalCost
+    }, { new: true })
+    .then(updatedQuote => {
+      // updatedQuote contains the updated quote document
+      res.json(updatedQuote);
+    })
+    .catch(err => {
+      console.error("Failed to edit quote:", err);
+      res.status(500).json({ error: "Failed to edit quote" });
+    });
   });
 
   // @route GET api/quotes/all
